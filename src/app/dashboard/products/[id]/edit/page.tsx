@@ -71,9 +71,14 @@ export default function EditProductPage({
     setError(null);
     setMessage(null);
     try {
+      const body = {
+        ...data,
+        service_url: data.service_url || undefined,
+        thumbnail_url: data.thumbnail_url || undefined,
+      };
       await api(`/creator/products/${productId}`, {
         method: "PUT",
-        body: JSON.stringify(data),
+        body: JSON.stringify(body),
       }, token);
       setMessage("保存しました");
     } catch (e) {
