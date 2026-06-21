@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { api, getApiErrorMessage } from "@/lib/api";
@@ -24,8 +25,10 @@ export default function EditProductPage({
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
-  const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm();
+  const { register, handleSubmit, reset, setValue, watch, formState: { isSubmitting } } = useForm();
+  const thumbnailUrl = watch("thumbnail_url");
 
   useEffect(() => {
     if (!token || !productId) return;
@@ -37,10 +40,31 @@ export default function EditProductPage({
           catch_copy: res.data.catch_copy ?? "",
           description: res.data.description ?? "",
           service_url: res.data.service_url ?? "",
+          thumbnail_url: res.data.thumbnail_url ?? "",
         });
       })
       .finally(() => setLoading(false));
   }, [token, productId, reset]);
+
+  const uploadImage = async (file: File) => {
+    if (!token) return;
+    setUploading(true);
+    setError(null);
+    try {
+      const form = new FormData();
+      form.append("image", file);
+      const res = await api<{ url: string }>("/uploads/image", {
+        method: "POST",
+        body: form,
+      }, token);
+      setValue("thumbnail_url", res.url);
+      setMessage("サムネイルをアップロードしました。保存ボタンで反映してください。");
+    } catch (e) {
+      setError(getApiErrorMessage(e, "画像のアップロードに失敗しました"));
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const onSubmit = async (data: Record<string, string>) => {
     if (!token || !productId) return;
@@ -111,6 +135,29 @@ export default function EditProductPage({
         <Input label="キャッチコピー" {...register("catch_copy")} />
         <Textarea label="説明" rows={5} {...register("description")} />
         <Input label="サービス URL" {...register("service_url")} />
+        <div>
+          <label className="block text-sm font-medium">サムネイル</label>
+          {thumbnailUrl && (
+            <div className="relative mt-2 h-40 w-full max-w-xs overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
+              <Image
+                src={thumbnailUrl}
+                alt="サムネイルプレビュー"
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            </div>
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            className="mt-2 text-sm"
+            onChange={(e) => e.target.files?.[0] && uploadImage(e.target.files[0])}
+            disabled={uploading}
+          />
+          {uploading && <p className="mt-1 text-xs text-zinc-500">アップロード中...</p>}
+          <input type="hidden" {...register("thumbnail_url")} />
+        </div>
         {error && <p className="text-sm text-red-600">{error}</p>}
         {message && <p className="text-sm text-green-600">{message}</p>}
         <div className="flex flex-wrap gap-3">
