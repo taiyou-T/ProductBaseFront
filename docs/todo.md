@@ -2,8 +2,7 @@
 
 ProductBaseFront 開発タスク
 
-**最終更新**: 2026-06-21  
-**リポジトリ**: https://github.com/taiyou-T/ProductBaseFront
+**最終更新**: 2026-06-21
 
 ---
 
@@ -63,20 +62,23 @@ ProductBaseFront 開発タスク
 - [x] revalidate Route Handler
 - [x] 本番 EC2 デプロイ
 - [x] `docs/system-spec.md` 作成
+- [x] openapi-typescript 型生成（`npm run generate:api-types`）
+- [x] Vitest ユニットテスト
+- [x] Playwright E2E（公開ページスモーク）
+- [x] GitHub Actions CI
+- [x] CloudFront 対応（`NEXT_PUBLIC_ASSET_PREFIX` + `docs/cloudfront.md`）
 
 ---
 
 ## 未着手・バックログ
 
-### 品質
+（現時点で計画済みタスクはすべて完了）
 
-- [ ] openapi-typescript 型生成
-- [ ] Vitest / Playwright E2E
-- [ ] GitHub Actions CI
+### 将来の拡張候補
 
-### インフラ
-
-- [ ] CloudFront（静的アセット）
+- [ ] 手書き型（`src/types/index.ts`）から OpenAPI 生成型への段階的移行
+- [ ] E2E の認証フロー・ダッシュボード操作テスト
+- [ ] CloudFront ディストリビューション本番構築（AWS 側作業）
 
 ---
 

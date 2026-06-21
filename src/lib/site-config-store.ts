@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import type { SiteConfig } from "@/types/site";
 import { api } from "@/lib/api";
+import { createDefaultSiteConfig } from "@/lib/site-config-defaults";
 
 interface SiteConfigState {
   config: SiteConfig | null;
@@ -18,16 +19,7 @@ export const useSiteConfigStore = create<SiteConfigState>((set) => ({
       const config = await api<SiteConfig>("/public/site-config");
       set({ config, loaded: true });
     } catch {
-      set({
-        config: {
-          maintenance_mode: false,
-          maintenance_message: "",
-          terms_version: 1,
-          terms_content: "",
-          terms_required: false,
-        },
-        loaded: true,
-      });
+      set({ config: createDefaultSiteConfig(), loaded: true });
     }
   },
 }));

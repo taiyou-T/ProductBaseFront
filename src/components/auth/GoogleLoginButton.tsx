@@ -10,7 +10,39 @@ import type { AuthResponse } from "@/types";
 
 const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 
-function GoogleLoginInner() {
+function GoogleRedirectLogin() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const loginWithRedirect = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await api<{ url: string }>("/auth/google/redirect");
+      window.location.href = res.url;
+    } catch (e) {
+      setError(e instanceof ApiError ? e.message : "Google ログインに失敗しました");
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <Button
+        type="button"
+        variant="secondary"
+        className="w-full"
+        disabled={loading}
+        onClick={loginWithRedirect}
+      >
+        {loading ? "接続中..." : "Google でログイン"}
+      </Button>
+      {error && <p className="text-sm text-red-600">{error}</p>}
+    </div>
+  );
+}
+
+function GoogleSdkLogin() {
   const router = useRouter();
   const setAuth = useAuthStore((s) => s.setAuth);
   const [loading, setLoading] = useState(false);
@@ -36,18 +68,6 @@ function GoogleLoginInner() {
     onError: () => setError("Google ログインがキャンセルされました"),
   });
 
-  const loginWithRedirect = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await api<{ url: string }>("/auth/google/redirect");
-      window.location.href = res.url;
-    } catch (e) {
-      setError(e instanceof ApiError ? e.message : "Google ログインに失敗しました");
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="space-y-2">
       <Button
@@ -55,7 +75,7 @@ function GoogleLoginInner() {
         variant="secondary"
         className="w-full"
         disabled={loading}
-        onClick={() => (clientId ? loginWithSdk() : loginWithRedirect())}
+        onClick={() => loginWithSdk()}
       >
         {loading ? "接続中..." : "Google でログイン"}
       </Button>
@@ -65,13 +85,13 @@ function GoogleLoginInner() {
 }
 
 export function GoogleLoginButton() {
-  if (clientId) {
-    return (
-      <GoogleOAuthProvider clientId={clientId}>
-        <GoogleLoginInner />
-      </GoogleOAuthProvider>
-    );
+  if (!clientId) {
+    return <GoogleRedirectLogin />;
   }
 
-  return <GoogleLoginInner />;
+  return (
+    <GoogleOAuthProvider clientId={clientId}>
+      <GoogleSdkLogin />
+    </GoogleOAuthProvider>
+  );
 }
