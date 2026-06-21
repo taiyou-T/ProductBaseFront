@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,6 +10,7 @@ import { api, getApiErrorMessage } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import type { Product } from "@/types";
 
 const schema = z.object({
   title: z.string().min(1, "タイトルを入力してください"),
@@ -24,9 +26,17 @@ const schema = z.object({
 
 export default function NewProductPage() {
   const router = useRouter();
-  const { token } = useAuthStore();
+  const { token, user, refreshUser } = useAuthStore();
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [checkingCreator, setCheckingCreator] = useState(true);
+
+  useEffect(() => {
+    if (!token) return;
+    refreshUser()
+      .catch(() => undefined)
+      .finally(() => setCheckingCreator(false));
+  }, [token, refreshUser]);
 
   const { register, handleSubmit, setValue, watch, formState: { isSubmitting } } = useForm({
     resolver: zodResolver(schema),
@@ -60,15 +70,36 @@ export default function NewProductPage() {
         service_url: data.service_url || undefined,
         category_id: data.category_id || undefined,
       };
-      const res = await api<{ product: { data: { id: number } } }>("/creator/products", {
+      const res = await api<{ product: Product }>("/creator/products", {
         method: "POST",
         body: JSON.stringify(body),
       }, token);
-      router.push(`/dashboard/products/${res.product.data.id}/edit`);
+      router.push(`/dashboard/products/${res.product.id}/edit`);
     } catch (e) {
       setError(getApiErrorMessage(e, "作成に失敗しました"));
     }
   };
+
+  if (checkingCreator) {
+    return <p className="text-zinc-500">読み込み中...</p>;
+  }
+
+  if (!user?.is_creator) {
+    return (
+      <div className="mx-auto max-w-lg space-y-4 rounded-xl border border-amber-200 bg-amber-50 p-6 dark:border-amber-900 dark:bg-amber-950/30">
+        <h1 className="text-xl font-bold">掲載者プロフィールが必要です</h1>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          成果物を作成する前に、掲載者としてのプロフィール登録が必要です。
+        </p>
+        <Button type="button" onClick={() => router.push("/dashboard/onboarding")}>
+          プロフィールを作成する
+        </Button>
+        <p className="text-sm">
+          <Link href="/dashboard" className="text-indigo-600 hover:underline">ダッシュボードに戻る</Link>
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
