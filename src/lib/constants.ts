@@ -34,21 +34,21 @@ export const REPORT_REASONS = [
 export const SUBSCRIPTION_PLANS = [
   {
     type: "supporter" as const,
-    name: "サポーター",
-    description: "お気に入り上限拡大・閲覧履歴・チャット",
+    name: "詳細閲覧・チャット",
+    description: "お気に入り上限拡大・閲覧履歴・掲載者へのチャット",
     price: "¥500/月",
     requiresCreator: false,
   },
   {
     type: "standard" as const,
-    name: "Standard",
-    description: "掲載者向け基本プラン",
-    price: "¥1,000/月",
+    name: "基本掲載",
+    description: "成果物の掲載・管理（掲載者向け）",
+    price: "¥500/月",
     requiresCreator: true,
   },
   {
     type: "premium" as const,
-    name: "Premium",
+    name: "Premium 掲載",
     description: "掲載者向け上位プラン",
     price: "¥1,500/月",
     requiresCreator: true,
