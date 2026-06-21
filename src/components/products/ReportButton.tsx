@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useAuthStore } from "@/lib/auth-store";
-import { api, ApiError } from "@/lib/api";
+import { api, getApiErrorMessage } from "@/lib/api";
 import { REPORT_REASONS } from "@/lib/constants";
 import { Button } from "@/components/ui/Button";
 import type { ReportReason } from "@/types";
@@ -32,7 +32,7 @@ export function ReportButton({ productId }: { productId: number }) {
       setMessage(res.message);
       setOpen(false);
     } catch (e) {
-      setMessage(e instanceof ApiError ? e.message : "通報に失敗しました");
+      setMessage(getApiErrorMessage(e, "通報に失敗しました"));
     } finally {
       setLoading(false);
     }

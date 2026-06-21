@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { api, ApiError } from "@/lib/api";
+import { api, getApiErrorMessage } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -41,7 +41,7 @@ export default function ProfilePage() {
       await refreshUser();
       setMessage("プロフィールを更新しました");
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : "更新に失敗しました");
+      setError(getApiErrorMessage(e, "更新に失敗しました"));
     }
   };
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/lib/auth-store";
-import { api, ApiError } from "@/lib/api";
+import { api, getApiErrorMessage } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 
 export function CreatorFavoriteButton({ creatorUserId }: { creatorUserId: number }) {
@@ -47,7 +47,7 @@ export function CreatorFavoriteButton({ creatorUserId }: { creatorUserId: number
         setMessage("開発者をお気に入りに追加しました");
       }
     } catch (e) {
-      setMessage(e instanceof ApiError ? e.message : "エラーが発生しました");
+      setMessage(getApiErrorMessage(e, "エラーが発生しました"));
     } finally {
       setLoading(false);
     }

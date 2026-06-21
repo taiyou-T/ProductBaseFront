@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuthStore } from "@/lib/auth-store";
-import { api, ApiError } from "@/lib/api";
+import { api, getApiErrorMessage } from "@/lib/api";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import type { Organization } from "@/types";
@@ -67,7 +67,7 @@ export default function EditOrganizationPage() {
       );
       router.push("/dashboard/organizations");
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : "更新に失敗しました");
+      setError(getApiErrorMessage(e, "更新に失敗しました"));
     }
   };
 

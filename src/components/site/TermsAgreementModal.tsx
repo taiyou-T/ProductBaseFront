@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { api, ApiError } from "@/lib/api";
+import { api, getApiErrorMessage } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { Button } from "@/components/ui/Button";
 
@@ -28,7 +28,7 @@ export function TermsAgreementModal({
       }, token);
       setAuth(token, res.user);
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : "同意の送信に失敗しました");
+      setError(getApiErrorMessage(e, "同意の送信に失敗しました"));
     } finally {
       setLoading(false);
     }

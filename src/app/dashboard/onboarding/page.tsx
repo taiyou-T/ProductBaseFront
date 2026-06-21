@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { api, ApiError } from "@/lib/api";
+import { api, getApiErrorMessage } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -38,7 +38,7 @@ export default function OnboardingPage() {
       await refreshUser();
       router.push("/dashboard/products/new");
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : "作成に失敗しました");
+      setError(getApiErrorMessage(e, "作成に失敗しました"));
     }
   };
 

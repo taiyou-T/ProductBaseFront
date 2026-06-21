@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/lib/auth-store";
-import { api, ApiError } from "@/lib/api";
+import { api, getApiErrorMessage } from "@/lib/api";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { Button } from "@/components/ui/Button";
 import { SUBSCRIPTION_PLANS } from "@/lib/constants";
@@ -35,7 +35,7 @@ export default function BillingPage() {
       );
       window.location.href = res.checkout_url;
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : "Checkout に失敗しました");
+      setError(getApiErrorMessage(e, "Checkout に失敗しました"));
       setCheckoutLoading(null);
     }
   };
@@ -52,7 +52,7 @@ export default function BillingPage() {
       );
       window.location.href = res.portal_url;
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : "ポータルを開けませんでした");
+      setError(getApiErrorMessage(e, "ポータルを開けませんでした"));
     } finally {
       setPortalLoading(false);
     }

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
-import { api, ApiError } from "@/lib/api";
+import { api, getApiErrorMessage } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { Button } from "@/components/ui/Button";
 import type { AuthResponse } from "@/types";
@@ -28,7 +28,7 @@ function GoogleRedirectLogin({ termsRequired, termsAgreed }: GoogleLoginButtonPr
       const res = await api<{ url: string }>("/auth/google/redirect");
       window.location.href = res.url;
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : "Google ログインに失敗しました");
+      setError(getApiErrorMessage(e, "Google ログインに失敗しました"));
       setLoading(false);
     }
   };
@@ -72,7 +72,7 @@ function GoogleSdkLogin({ termsRequired, termsAgreed }: GoogleLoginButtonProps) 
         setAuth(res.token, res.user);
         router.push("/dashboard");
       } catch (e) {
-        setError(e instanceof ApiError ? e.message : "Google ログインに失敗しました");
+        setError(getApiErrorMessage(e, "Google ログインに失敗しました"));
       } finally {
         setLoading(false);
       }

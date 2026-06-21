@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/lib/auth-store";
-import { api, ApiError } from "@/lib/api";
+import { api, getApiErrorMessage } from "@/lib/api";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import type { Product } from "@/types";
@@ -18,7 +18,7 @@ export default function ViewHistoryPage() {
     api<{ data: Product[] }>("/view-history", {}, token)
       .then((res) => setProducts(res.data))
       .catch((e) => {
-        setError(e instanceof ApiError ? e.message : "閲覧履歴を取得できませんでした");
+        setError(getApiErrorMessage(e, "閲覧履歴を取得できませんでした"));
       })
       .finally(() => setLoading(false));
   }, [token]);

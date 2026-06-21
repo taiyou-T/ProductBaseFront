@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { api, ApiError } from "@/lib/api";
+import { api, getApiErrorMessage } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { useSiteConfigStore } from "@/lib/site-config-store";
 import { Input } from "@/components/ui/Input";
@@ -55,11 +55,7 @@ export default function RegisterPage() {
       setAuth(res.token, res.user);
       router.push(data.as_creator ? "/dashboard/onboarding" : "/dashboard");
     } catch (e) {
-      if (e instanceof ApiError) {
-        setError(e.message);
-      } else {
-        setError("登録に失敗しました");
-      }
+      setError(getApiErrorMessage(e, "登録に失敗しました"));
     }
   };
 

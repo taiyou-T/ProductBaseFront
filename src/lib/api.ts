@@ -1,19 +1,10 @@
-import type { ApiErrorBody } from "@/types";
-
-export class ApiError extends Error {
-  status: number;
-  errors?: Record<string, string[]>;
-
-  constructor(status: number, message?: string, errors?: Record<string, string[]>) {
-    super(message ?? `API Error ${status}`);
-    this.status = status;
-    this.errors = errors;
-  }
-}
+import { ApiError, apiErrorFromBody } from "@/lib/api-error";
 
 function getApiUrl(): string {
   return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
 }
+
+export { ApiError, getApiErrorMessage } from "@/lib/api-error";
 
 export async function api<T>(
   path: string,
@@ -34,8 +25,8 @@ export async function api<T>(
   const res = await fetch(`${getApiUrl()}${path}`, { ...options, headers });
 
   if (!res.ok) {
-    const err = (await res.json().catch(() => ({}))) as ApiErrorBody;
-    throw new ApiError(res.status, err.message, err.errors);
+    const err = await res.json().catch(() => ({}));
+    throw apiErrorFromBody(res.status, err);
   }
 
   if (res.status === 204) {

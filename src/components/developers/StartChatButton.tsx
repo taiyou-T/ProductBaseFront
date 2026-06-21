@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
-import { api, ApiError } from "@/lib/api";
+import { api, getApiErrorMessage } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 import type { Conversation } from "@/types";
 
@@ -60,7 +60,7 @@ export function StartChatButton({
       );
       router.push(`/conversations/${res.conversation.id}`);
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : "チャットを開始できませんでした");
+      setError(getApiErrorMessage(e, "チャットを開始できませんでした"));
     } finally {
       setLoading(false);
     }

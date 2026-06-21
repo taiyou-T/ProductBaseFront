@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
-import { api, ApiError } from "@/lib/api";
+import { api, getApiErrorMessage } from "@/lib/api";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { Button } from "@/components/ui/Button";
 import type { Conversation } from "@/types";
@@ -22,7 +22,7 @@ export default function ConversationDetailPage() {
     if (!token) return;
     api<{ data: Conversation }>(`/conversations/${params.id}`, {}, token)
       .then((res) => setConversation(res.data))
-      .catch((e) => setError(e instanceof ApiError ? e.message : "会話を取得できませんでした"))
+      .catch((e) => setError(getApiErrorMessage(e, "会話を取得できませんでした")))
       .finally(() => setLoading(false));
   };
 
@@ -42,7 +42,7 @@ export default function ConversationDetailPage() {
       setMessage("");
       load();
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : "送信に失敗しました");
+      setError(getApiErrorMessage(e, "送信に失敗しました"));
     } finally {
       setSending(false);
     }

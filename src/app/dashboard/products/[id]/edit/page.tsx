@@ -3,7 +3,7 @@
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { api, ApiError } from "@/lib/api";
+import { api, getApiErrorMessage } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -52,7 +52,7 @@ export default function EditProductPage({
       }, token);
       setMessage("保存しました");
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : "保存に失敗しました");
+      setError(getApiErrorMessage(e, "保存に失敗しました"));
     }
   };
 
@@ -65,7 +65,7 @@ export default function EditProductPage({
       const res = await api<{ data: Product }>(`/creator/products/${productId}`, {}, token);
       setProduct(res.data);
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : "申請に失敗しました");
+      setError(getApiErrorMessage(e, "申請に失敗しました"));
     }
   };
 
