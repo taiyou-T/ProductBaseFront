@@ -6,6 +6,8 @@ import { serverApi, getSiteUrl } from "@/lib/api";
 import { DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
 import { Badge } from "@/components/ui/Badge";
 import { FavoriteButton } from "@/components/products/FavoriteButton";
+import { ReportButton } from "@/components/products/ReportButton";
+import { DeveloperActions } from "@/components/developers/DeveloperActions";
 import type { Product } from "@/types";
 
 async function getProduct(slug: string) {
@@ -108,6 +110,13 @@ export default async function ProductDetailPage({
             <span>♥ {product.favorite_count}</span>
           </div>
           <FavoriteButton productId={product.id} />
+          {developer && product.user && (
+            <DeveloperActions
+              creatorUserId={product.user.id}
+              chatStatus={developer.chat_status}
+            />
+          )}
+          <ReportButton productId={product.id} />
           <div className="flex flex-wrap gap-3">
             {product.service_url && (
               <a

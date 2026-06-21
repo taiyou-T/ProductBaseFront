@@ -12,6 +12,7 @@ import { useSiteConfigStore } from "@/lib/site-config-store";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { TermsCheckbox } from "@/components/auth/TermsCheckbox";
+import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
 import type { AuthResponse } from "@/types";
 
 const schema = z.object({
@@ -84,6 +85,15 @@ export default function RegisterPage() {
           {isSubmitting ? "登録中..." : "登録"}
         </Button>
       </form>
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t border-zinc-200 dark:border-zinc-800" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-zinc-50 px-2 text-zinc-500 dark:bg-zinc-950">または</span>
+        </div>
+      </div>
+      <GoogleLoginButton />
       <p className="text-sm text-zinc-500">
         既にアカウントをお持ちの方は{" "}
         <Link href="/login" className="text-indigo-600 hover:underline">ログイン</Link>

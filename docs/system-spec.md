@@ -56,6 +56,7 @@ ProductBaseFront（公開サイト + 掲載者ダッシュボード）
 | `/products` | 成果物一覧（ソート） |
 | `/products/[slug]` | 成果物詳細（JSON-LD・OGP） |
 | `/developers/[slug]` | 開発者プロフィール |
+| `/organizations/[slug]` | 団体プロフィール |
 | `/categories/[slug]` | カテゴリ別一覧 |
 | `/tags/[slug]` | タグ別一覧 |
 | `/search` | 全文検索 |
@@ -72,7 +73,15 @@ ProductBaseFront（公開サイト + 掲載者ダッシュボード）
 
 | パス | 説明 |
 |------|------|
-| `/favorites` | お気に入り一覧 |
+| `/favorites` | お気に入り成果物一覧 |
+| `/creator-favorites` | お気に入り開発者一覧 |
+| `/notifications` | 通知一覧 |
+| `/view-history` | 閲覧履歴（サポーター） |
+| `/conversations` | チャット一覧（サポーター） |
+| `/conversations/[id]` | チャット詳細 |
+| `/settings/billing` | Stripe Checkout / Portal |
+| `/billing/success` | 決済成功 |
+| `/billing/cancel` | 決済キャンセル |
 
 ### 掲載者ダッシュボード（要ログイン）
 
@@ -84,6 +93,15 @@ ProductBaseFront（公開サイト + 掲載者ダッシュボード）
 | `/dashboard/products` | 成果物一覧 |
 | `/dashboard/products/new` | 成果物作成 |
 | `/dashboard/products/[id]/edit` | 編集・掲載申請 |
+| `/dashboard/organizations` | 団体一覧 |
+| `/dashboard/organizations/new` | 団体作成 |
+| `/dashboard/organizations/[id]/edit` | 団体編集 |
+
+### SEO
+
+| パス | 説明 |
+|------|------|
+| `/sitemap.xml` | 動的 sitemap（`app/sitemap.ts`） |
 
 ### API Route
 
@@ -129,3 +147,4 @@ REVALIDATE_SECRET=<フロントと同一>
 |------|------|
 | 2026-06-21 | 初版・本番デプロイ（productbase-jp.com） |
 | 2026-06-21 | MVP 公開ページ・認証・掲載者ダッシュボード基盤 |
+| 2026-06-21 | UI 機能一式（OAuth・Stripe・通知・チャット・団体・通報・sitemap・ダークモード） |

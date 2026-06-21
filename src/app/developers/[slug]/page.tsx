@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { serverApi } from "@/lib/api";
 import { ProductGrid } from "@/components/products/ProductGrid";
+import { DeveloperActions } from "@/components/developers/DeveloperActions";
 import type { CreatorProfile, PaginatedResponse, Product } from "@/types";
 
 async function getDeveloper(slug: string) {
@@ -66,6 +67,14 @@ export default async function DeveloperPage({
               </a>
             )}
           </div>
+          {profile.user_id && (
+            <div className="mt-4">
+              <DeveloperActions
+                creatorUserId={profile.user_id}
+                chatStatus={profile.chat_status}
+              />
+            </div>
+          )}
         </div>
       </div>
       <section>

@@ -37,6 +37,12 @@ export default function DashboardLayout({
           <Link href="/dashboard/profile" className="block rounded-lg px-2 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">
             プロフィール
           </Link>
+          <Link href="/dashboard/organizations" className="block rounded-lg px-2 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">
+            団体
+          </Link>
+          <Link href="/settings/billing" className="block rounded-lg px-2 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">
+            プラン・お支払い
+          </Link>
         </nav>
       </aside>
       <div className="flex-1">{children}</div>

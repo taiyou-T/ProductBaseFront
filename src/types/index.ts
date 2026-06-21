@@ -42,8 +42,18 @@ export interface ProductImage {
   sort_order: number;
 }
 
+export type ReportReason =
+  | "spam"
+  | "copyright"
+  | "fake"
+  | "inappropriate"
+  | "other";
+
+export type SubscriptionPlanType = "supporter" | "standard" | "premium";
+
 export interface CreatorProfile {
   id: number;
+  user_id?: number;
   display_name: string;
   slug: string;
   bio: string | null;
@@ -135,4 +145,50 @@ export interface AuthResponse {
 export interface ApiErrorBody {
   message?: string;
   errors?: Record<string, string[]>;
+}
+
+export interface Organization {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  website_url: string | null;
+  github_url: string | null;
+  x_url: string | null;
+  logo_url: string | null;
+  cover_url: string | null;
+}
+
+export interface Notification {
+  id: number;
+  type: string;
+  title: string;
+  body: string;
+  is_read: boolean;
+  created_at: string;
+}
+
+export interface Conversation {
+  id: number;
+  creator_user_id: number;
+  viewer_user_id: number;
+  created_at: string;
+  messages?: Message[];
+}
+
+export interface Message {
+  id: number;
+  sender_user_id: number;
+  message: string;
+  read_at: string | null;
+  created_at: string;
+}
+
+export interface Subscription {
+  id: number;
+  plan_type: SubscriptionPlanType;
+  status: "active" | "canceled" | "past_due" | "trialing";
+  started_at: string;
+  ended_at: string | null;
+  is_active: boolean;
 }

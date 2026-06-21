@@ -5,6 +5,7 @@ import { useAuthStore } from "@/lib/auth-store";
 import { api } from "@/lib/api";
 import { SITE_NAME } from "@/lib/constants";
 import { Button } from "@/components/ui/Button";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export function Header() {
   const { user, token, clearAuth, hydrated } = useAuthStore();
@@ -32,13 +33,33 @@ export function Header() {
           <Link href="/search" className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
             検索
           </Link>
+          <ThemeToggle />
           {hydrated && user && (
             <>
               <Link href="/favorites" className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400">
                 お気に入り
               </Link>
+              <Link href="/creator-favorites" className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400">
+                開発者
+              </Link>
+              <Link href="/notifications" className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400">
+                通知
+              </Link>
+              {user.is_supporter && (
+                <>
+                  <Link href="/view-history" className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400">
+                    履歴
+                  </Link>
+                  <Link href="/conversations" className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400">
+                    チャット
+                  </Link>
+                </>
+              )}
               <Link href="/dashboard" className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400">
                 ダッシュボード
+              </Link>
+              <Link href="/settings/billing" className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400">
+                プラン
               </Link>
             </>
           )}
