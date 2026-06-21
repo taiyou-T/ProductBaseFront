@@ -10,11 +10,18 @@ import type { AuthResponse } from "@/types";
 
 const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 
-function GoogleRedirectLogin() {
+type GoogleLoginButtonProps = {
+  termsRequired?: boolean;
+  termsAgreed?: boolean;
+};
+
+function GoogleRedirectLogin({ termsRequired, termsAgreed }: GoogleLoginButtonProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const disabled = loading || (termsRequired && !termsAgreed);
 
   const loginWithRedirect = async () => {
+    if (termsRequired && !termsAgreed) return;
     setLoading(true);
     setError(null);
     try {
@@ -32,7 +39,7 @@ function GoogleRedirectLogin() {
         type="button"
         variant="secondary"
         className="w-full"
-        disabled={loading}
+        disabled={disabled}
         onClick={loginWithRedirect}
       >
         {loading ? "接続中..." : "Google でログイン"}
@@ -42,20 +49,25 @@ function GoogleRedirectLogin() {
   );
 }
 
-function GoogleSdkLogin() {
+function GoogleSdkLogin({ termsRequired, termsAgreed }: GoogleLoginButtonProps) {
   const router = useRouter();
   const setAuth = useAuthStore((s) => s.setAuth);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const disabled = loading || (termsRequired && !termsAgreed);
 
   const loginWithSdk = useGoogleLogin({
     onSuccess: async (response) => {
+      if (termsRequired && !termsAgreed) return;
       setLoading(true);
       setError(null);
       try {
         const res = await api<AuthResponse>("/auth/google/token", {
           method: "POST",
-          body: JSON.stringify({ access_token: response.access_token }),
+          body: JSON.stringify({
+            access_token: response.access_token,
+            terms_agreed: termsRequired ? true : undefined,
+          }),
         });
         setAuth(res.token, res.user);
         router.push("/dashboard");
@@ -74,7 +86,7 @@ function GoogleSdkLogin() {
         type="button"
         variant="secondary"
         className="w-full"
-        disabled={loading}
+        disabled={disabled}
         onClick={() => loginWithSdk()}
       >
         {loading ? "接続中..." : "Google でログイン"}
@@ -84,14 +96,14 @@ function GoogleSdkLogin() {
   );
 }
 
-export function GoogleLoginButton() {
+export function GoogleLoginButton({ termsRequired = false, termsAgreed = false }: GoogleLoginButtonProps) {
   if (!clientId) {
-    return <GoogleRedirectLogin />;
+    return <GoogleRedirectLogin termsRequired={termsRequired} termsAgreed={termsAgreed} />;
   }
 
   return (
     <GoogleOAuthProvider clientId={clientId}>
-      <GoogleSdkLogin />
+      <GoogleSdkLogin termsRequired={termsRequired} termsAgreed={termsAgreed} />
     </GoogleOAuthProvider>
   );
 }

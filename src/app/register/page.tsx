@@ -93,7 +93,7 @@ export default function RegisterPage() {
           <span className="bg-zinc-50 px-2 text-zinc-500 dark:bg-zinc-950">または</span>
         </div>
       </div>
-      <GoogleLoginButton />
+      <GoogleLoginButton termsRequired={true} termsAgreed={termsAgreed} />
       <p className="text-sm text-zinc-500">
         既にアカウントをお持ちの方は{" "}
         <Link href="/login" className="text-indigo-600 hover:underline">ログイン</Link>
