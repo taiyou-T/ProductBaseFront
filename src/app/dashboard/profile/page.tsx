@@ -24,6 +24,7 @@ export default function ProfilePage() {
           bio: res.data.bio ?? "",
           website_url: res.data.website_url ?? "",
           github_url: res.data.github_url ?? "",
+          chat_status: res.data.chat_status ?? "closed",
         });
       })
       .catch(() => {});
@@ -53,6 +54,23 @@ export default function ProfilePage() {
         <Textarea label="自己紹介" rows={4} {...register("bio")} />
         <Input label="Website" {...register("website_url")} />
         <Input label="GitHub" {...register("github_url")} />
+        <div>
+          <label htmlFor="chat_status" className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            チャット受付
+          </label>
+          <select
+            id="chat_status"
+            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+            {...register("chat_status")}
+          >
+            <option value="closed">受付停止</option>
+            <option value="supporter_only">サポーター限定（推奨）</option>
+            <option value="open">誰でも開始可</option>
+          </select>
+          <p className="mt-1 text-xs text-zinc-500">
+            「受付停止」のままでは開発者ページにチャット開始ボタンが表示されません。
+          </p>
+        </div>
         {error && <p className="text-sm text-red-600">{error}</p>}
         {message && <p className="text-sm text-green-600">{message}</p>}
         <Button type="submit" disabled={isSubmitting}>

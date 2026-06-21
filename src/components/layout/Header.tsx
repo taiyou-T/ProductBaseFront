@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useAuthStore } from "@/lib/auth-store";
 import { api } from "@/lib/api";
 import { SITE_NAME } from "@/lib/constants";
+import { canAccessChat } from "@/lib/chat-access";
 import { Button } from "@/components/ui/Button";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
@@ -46,14 +47,14 @@ export function Header() {
                 通知
               </Link>
               {user.is_supporter && (
-                <>
-                  <Link href="/view-history" className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400">
-                    履歴
-                  </Link>
-                  <Link href="/conversations" className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400">
-                    チャット
-                  </Link>
-                </>
+                <Link href="/view-history" className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400">
+                  履歴
+                </Link>
+              )}
+              {canAccessChat(user) && (
+                <Link href="/conversations" className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400">
+                  チャット
+                </Link>
               )}
               <Link href="/dashboard" className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400">
                 ダッシュボード

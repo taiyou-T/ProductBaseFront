@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuthStore } from "@/lib/auth-store";
+import { canAccessChat } from "@/lib/chat-access";
 
 export default function DashboardLayout({
   children,
@@ -37,6 +38,11 @@ export default function DashboardLayout({
           <Link href="/dashboard/profile" className="block rounded-lg px-2 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">
             プロフィール
           </Link>
+          {canAccessChat(user) && (
+            <Link href="/conversations" className="block rounded-lg px-2 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">
+              チャット
+            </Link>
+          )}
           <Link href="/dashboard/organizations" className="block rounded-lg px-2 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">
             団体
           </Link>
