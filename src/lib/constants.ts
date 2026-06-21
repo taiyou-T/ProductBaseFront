@@ -1,3 +1,5 @@
+import type { SubscriptionPlanType } from "@/types";
+
 export const SITE_NAME = "ProductBase";
 
 export const DEVELOPMENT_STATUS_LABELS: Record<string, string> = {
@@ -54,3 +56,15 @@ export const SUBSCRIPTION_PLANS = [
     requiresCreator: true,
   },
 ] as const;
+
+export const SUBSCRIPTION_STATUS_LABELS: Record<string, string> = {
+  active: "加入中",
+  trialing: "トライアル中",
+  past_due: "支払い遅延",
+  canceled: "解約済み",
+  incomplete: "手続き未完了",
+};
+
+export function planLabel(planType: SubscriptionPlanType): string {
+  return SUBSCRIPTION_PLANS.find((p) => p.type === planType)?.name ?? planType;
+}
