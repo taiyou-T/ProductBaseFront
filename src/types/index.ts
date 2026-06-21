@@ -66,6 +66,9 @@ export interface User {
   is_admin: boolean;
   is_creator: boolean;
   is_supporter: boolean;
+  terms_agreed_version: number | null;
+  current_terms_version: number;
+  needs_terms_agreement: boolean;
   creator_profile: CreatorProfile | null;
 }
 

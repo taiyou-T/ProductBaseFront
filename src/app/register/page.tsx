@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -8,8 +8,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api, ApiError } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
+import { useSiteConfigStore } from "@/lib/site-config-store";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { TermsCheckbox } from "@/components/auth/TermsCheckbox";
 import type { AuthResponse } from "@/types";
 
 const schema = z.object({
@@ -23,7 +25,13 @@ const schema = z.object({
 export default function RegisterPage() {
   const router = useRouter();
   const setAuth = useAuthStore((s) => s.setAuth);
+  const { load } = useSiteConfigStore();
   const [error, setError] = useState<string | null>(null);
+  const [termsAgreed, setTermsAgreed] = useState(false);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(schema),
@@ -33,11 +41,15 @@ export default function RegisterPage() {
   const asCreator = watch("as_creator");
 
   const onSubmit = async (data: z.infer<typeof schema>) => {
+    if (!termsAgreed) return;
     setError(null);
     try {
       const res = await api<AuthResponse>("/auth/register", {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          terms_agreed: true,
+        }),
       });
       setAuth(res.token, res.user);
       router.push(data.as_creator ? "/dashboard/onboarding" : "/dashboard");
@@ -49,6 +61,8 @@ export default function RegisterPage() {
       }
     }
   };
+
+  const canSubmit = !isSubmitting && termsAgreed;
 
   return (
     <div className="mx-auto max-w-md space-y-6">
@@ -64,8 +78,9 @@ export default function RegisterPage() {
         {asCreator && (
           <Input label="表示名（掲載者名）" error={errors.display_name?.message} {...register("display_name")} />
         )}
+        <TermsCheckbox checked={termsAgreed} onChange={setTermsAgreed} />
         {error && <p className="text-sm text-red-600">{error}</p>}
-        <Button type="submit" disabled={isSubmitting} className="w-full">
+        <Button type="submit" disabled={!canSubmit} className="w-full">
           {isSubmitting ? "登録中..." : "登録"}
         </Button>
       </form>

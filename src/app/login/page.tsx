@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -8,8 +8,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api, ApiError } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
+import { useSiteConfigStore } from "@/lib/site-config-store";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { TermsCheckbox } from "@/components/auth/TermsCheckbox";
 import type { AuthResponse } from "@/types";
 
 const schema = z.object({
@@ -20,18 +22,30 @@ const schema = z.object({
 export default function LoginPage() {
   const router = useRouter();
   const setAuth = useAuthStore((s) => s.setAuth);
+  const { config, load } = useSiteConfigStore();
   const [error, setError] = useState<string | null>(null);
+  const [termsAgreed, setTermsAgreed] = useState(false);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const termsRequired = config?.terms_required ?? false;
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(schema),
   });
 
   const onSubmit = async (data: z.infer<typeof schema>) => {
+    if (termsRequired && !termsAgreed) return;
     setError(null);
     try {
       const res = await api<AuthResponse>("/auth/login", {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          terms_agreed: termsRequired ? true : undefined,
+        }),
       });
       setAuth(res.token, res.user);
       router.push("/dashboard");
@@ -44,14 +58,19 @@ export default function LoginPage() {
     }
   };
 
+  const canSubmit = !isSubmitting && (!termsRequired || termsAgreed);
+
   return (
     <div className="mx-auto max-w-md space-y-6">
       <h1 className="text-2xl font-bold">ログイン</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Input label="メールアドレス" type="email" error={errors.email?.message} {...register("email")} />
         <Input label="パスワード" type="password" error={errors.password?.message} {...register("password")} />
+        {termsRequired && (
+          <TermsCheckbox checked={termsAgreed} onChange={setTermsAgreed} />
+        )}
         {error && <p className="text-sm text-red-600">{error}</p>}
-        <Button type="submit" disabled={isSubmitting} className="w-full">
+        <Button type="submit" disabled={!canSubmit} className="w-full">
           {isSubmitting ? "ログイン中..." : "ログイン"}
         </Button>
       </form>
