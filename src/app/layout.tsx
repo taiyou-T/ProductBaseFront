@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { SiteGate } from "@/components/site/SiteGate";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { Header } from "@/components/layout/Header";
+import { SiteNavigation } from "@/components/layout/SiteNavigation";
 import { Footer } from "@/components/layout/Footer";
 import { SITE_NAME } from "@/lib/constants";
 import "./globals.css";
@@ -49,8 +49,8 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <SiteGate>
-              <Header />
-              <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>
+              <SiteNavigation />
+              <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 pb-24 md:pb-8">{children}</main>
               <Footer />
             </SiteGate>
           </AuthProvider>
