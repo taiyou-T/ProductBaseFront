@@ -23,6 +23,7 @@ export default function EditProductPage({
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
 
   const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm();
 
@@ -69,6 +70,26 @@ export default function EditProductPage({
     }
   };
 
+  const deleteProduct = async () => {
+    if (!token || !productId || !product) return;
+    const isDraft = product.approval_status === "draft";
+    const confirmMessage = isDraft
+      ? "この下書きを削除します。元に戻せません。"
+      : "この成果物をアーカイブします。公開ページは非表示になります。";
+    if (!window.confirm(confirmMessage)) return;
+
+    setDeleting(true);
+    setError(null);
+    setMessage(null);
+    try {
+      await api(`/creator/products/${productId}`, { method: "DELETE" }, token);
+      router.push("/dashboard/products");
+    } catch (e) {
+      setError(getApiErrorMessage(e, isDraft ? "削除に失敗しました" : "アーカイブに失敗しました"));
+      setDeleting(false);
+    }
+  };
+
   if (loading) return <p>読み込み中...</p>;
   if (!product) return <p>成果物が見つかりません。</p>;
 
@@ -103,6 +124,18 @@ export default function EditProductPage({
           )}
           <Button type="button" variant="ghost" onClick={() => router.push("/dashboard/products")}>
             一覧へ
+          </Button>
+          <Button
+            type="button"
+            variant="danger"
+            disabled={deleting}
+            onClick={deleteProduct}
+          >
+            {deleting
+              ? "処理中..."
+              : product.approval_status === "draft"
+                ? "下書きを削除"
+                : "アーカイブ"}
           </Button>
         </div>
       </form>
