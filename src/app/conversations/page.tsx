@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuthStore } from "@/lib/auth-store";
 import { api, getApiErrorMessage } from "@/lib/api";
 import { canAccessChat } from "@/lib/chat-access";
+import { getConversationPartnerDisplayName } from "@/lib/conversation-partner";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import type { Conversation, PaginatedResponse } from "@/types";
 
@@ -54,19 +55,29 @@ export default function ConversationsPage() {
           </p>
         ) : (
           <ul className="divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
-            {conversations.map((c) => (
+            {conversations.map((c) => {
+              const partnerName = user
+                ? getConversationPartnerDisplayName(c, user.id)
+                : "ユーザー";
+              const preview = c.messages?.[0]?.message;
+
+              return (
               <li key={c.id}>
                 <Link
                   href={`/conversations/${c.id}`}
                   className="block p-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
                 >
-                  <p className="font-medium">会話 #{c.id}</p>
+                  <p className="font-medium">{partnerName}</p>
+                  {preview && (
+                    <p className="mt-1 truncate text-sm text-zinc-500">{preview}</p>
+                  )}
                   <p className="mt-1 text-xs text-zinc-400">
                     {new Date(c.created_at).toLocaleString("ja-JP")}
                   </p>
                 </Link>
               </li>
-            ))}
+              );
+            })}
           </ul>
         )}
       </div>

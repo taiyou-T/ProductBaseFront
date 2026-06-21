@@ -169,10 +169,19 @@ export interface Notification {
   created_at: string;
 }
 
+export interface ConversationParticipant {
+  id: number;
+  name: string;
+  display_name: string;
+  avatar_url: string | null;
+}
+
 export interface Conversation {
   id: number;
   creator_user_id: number;
   viewer_user_id: number;
+  creator?: ConversationParticipant;
+  viewer?: ConversationParticipant;
   created_at: string;
   messages?: Message[];
 }

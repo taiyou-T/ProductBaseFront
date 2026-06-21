@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import { api, getApiErrorMessage } from "@/lib/api";
+import { getConversationPartnerDisplayName } from "@/lib/conversation-partner";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { Button } from "@/components/ui/Button";
 import type { Conversation } from "@/types";
@@ -54,7 +55,11 @@ export default function ConversationDetailPage() {
         <Link href="/conversations" className="text-sm text-indigo-600 hover:underline">
           ← 会話一覧
         </Link>
-        <h1 className="text-2xl font-bold">チャット</h1>
+        <h1 className="text-2xl font-bold">
+          {conversation && user
+            ? getConversationPartnerDisplayName(conversation, user.id)
+            : "チャット"}
+        </h1>
         {loading ? (
           <p className="text-zinc-500">読み込み中...</p>
         ) : error && !conversation ? (
