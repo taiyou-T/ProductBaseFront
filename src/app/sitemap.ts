@@ -10,6 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: siteUrl, lastModified: now, changeFrequency: "daily", priority: 1 },
     { url: `${siteUrl}/products`, lastModified: now, changeFrequency: "hourly", priority: 0.9 },
     { url: `${siteUrl}/search`, lastModified: now, changeFrequency: "weekly", priority: 0.5 },
+    { url: `${siteUrl}/terms`, lastModified: now, changeFrequency: "monthly", priority: 0.3 },
   ];
 
   const [products, categories, tags] = await Promise.all([

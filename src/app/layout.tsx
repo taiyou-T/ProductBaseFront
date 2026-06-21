@@ -6,6 +6,8 @@ import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { SiteNavigation } from "@/components/layout/SiteNavigation";
 import { Footer } from "@/components/layout/Footer";
 import { SITE_NAME } from "@/lib/constants";
+import { DEFAULT_SITE_DESCRIPTION } from "@/lib/seo";
+import { getSiteUrl } from "@/lib/api";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,12 +21,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getSiteUrl()),
   title: {
     default: SITE_NAME,
     template: `%s | ${SITE_NAME}`,
   },
-  description:
-    "個人開発者・スタートアップの成果物を掲載し、SEO で発信するプラットフォーム",
+  description: DEFAULT_SITE_DESCRIPTION,
+  openGraph: {
+    type: "website",
+    locale: "ja_JP",
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: DEFAULT_SITE_DESCRIPTION,
+  },
 };
 
 export default function RootLayout({

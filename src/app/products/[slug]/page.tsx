@@ -2,7 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { serverApi, getSiteUrl } from "@/lib/api";
+import { serverApi } from "@/lib/api";
+import { publicPageMetadata } from "@/lib/seo";
 import { DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
 import { Badge } from "@/components/ui/Badge";
 import { FavoriteButton } from "@/components/products/FavoriteButton";
@@ -28,17 +29,12 @@ export async function generateMetadata({
   const product = await getProduct(slug);
   if (!product) return { title: "成果物が見つかりません" };
 
-  return {
+  return publicPageMetadata({
     title: product.title,
-    description: product.catch_copy ?? product.description,
-    openGraph: {
-      title: product.title,
-      description: product.catch_copy ?? undefined,
-      images: product.thumbnail_url ? [product.thumbnail_url] : [],
-      url: `${getSiteUrl()}/products/${product.slug}`,
-    },
-    alternates: { canonical: `${getSiteUrl()}/products/${product.slug}` },
-  };
+    description: product.catch_copy ?? product.description ?? product.title,
+    path: `/products/${product.slug}`,
+    image: product.thumbnail_url,
+  });
 }
 
 export default async function ProductDetailPage({

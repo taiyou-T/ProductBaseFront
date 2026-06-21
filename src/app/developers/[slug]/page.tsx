@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { serverApi } from "@/lib/api";
+import { publicPageMetadata } from "@/lib/seo";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { DeveloperActions } from "@/components/developers/DeveloperActions";
 import type { CreatorProfile, PaginatedResponse, Product } from "@/types";
@@ -13,6 +15,23 @@ async function getDeveloper(slug: string) {
   } catch {
     return null;
   }
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const profile = await getDeveloper(slug);
+  if (!profile) return { title: "開発者が見つかりません" };
+
+  return publicPageMetadata({
+    title: profile.display_name,
+    description: profile.bio ?? `${profile.display_name} の公開成果物一覧`,
+    path: `/developers/${slug}`,
+    image: profile.cover_url,
+  });
 }
 
 async function getDeveloperProducts(slug: string) {

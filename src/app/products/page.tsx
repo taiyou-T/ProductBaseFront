@@ -1,8 +1,16 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { serverApi } from "@/lib/api";
+import { publicPageMetadata } from "@/lib/seo";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { SORT_OPTIONS } from "@/lib/constants";
 import type { PaginatedResponse, Product } from "@/types";
+
+export const metadata: Metadata = publicPageMetadata({
+  title: "成果物一覧",
+  description: "ProductBase に掲載されている個人開発・スタートアップの成果物一覧です。",
+  path: "/products",
+});
 
 export default async function ProductsPage({
   searchParams,

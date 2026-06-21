@@ -1,8 +1,17 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { serverApi } from "@/lib/api";
+import { publicPageMetadata } from "@/lib/seo";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { ButtonLink } from "@/components/ui/Button";
 import type { Announcement, PaginatedResponse, Product } from "@/types";
+
+export const metadata: Metadata = publicPageMetadata({
+  title: "ProductBase",
+  description:
+    "個人開発者・スタートアップの成果物を掲載し、SEO で発信するプラットフォーム。新着成果物や人気ランキングからプロダクトを探せます。",
+  path: "/",
+});
 
 async function getHomeData() {
   try {

@@ -1,7 +1,15 @@
 import { serverApi } from "@/lib/api";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { Input } from "@/components/ui/Input";
+import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/seo";
 import type { PaginatedResponse, Product } from "@/types";
+
+export const metadata: Metadata = publicPageMetadata({
+  title: "検索",
+  description: "ProductBase の成果物をキーワードで検索できます。",
+  path: "/search",
+});
 
 export default async function SearchPage({
   searchParams,

@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { serverApi } from "@/lib/api";
+import { publicPageMetadata } from "@/lib/seo";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import type { Organization, PaginatedResponse, Product } from "@/types";
 
@@ -12,6 +14,23 @@ async function getOrganization(slug: string) {
   } catch {
     return null;
   }
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const org = await getOrganization(slug);
+  if (!org) return { title: "団体が見つかりません" };
+
+  return publicPageMetadata({
+    title: org.name,
+    description: org.description ?? `${org.name} の公開成果物一覧`,
+    path: `/organizations/${slug}`,
+    image: org.logo_url,
+  });
 }
 
 async function getOrganizationProducts(slug: string) {
