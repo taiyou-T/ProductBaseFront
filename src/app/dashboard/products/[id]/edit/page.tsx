@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -19,7 +20,7 @@ export default function EditProductPage({
 }) {
   const { id: productId } = use(params);
   const router = useRouter();
-  const { token } = useAuthStore();
+  const { token, user, refreshUser } = useAuthStore();
   const [product, setProduct] = useState<Product | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -29,6 +30,11 @@ export default function EditProductPage({
 
   const { register, handleSubmit, reset, setValue, watch, formState: { isSubmitting } } = useForm();
   const thumbnailUrl = watch("thumbnail_url");
+
+  useEffect(() => {
+    if (!token) return;
+    refreshUser().catch(() => undefined);
+  }, [token, refreshUser]);
 
   useEffect(() => {
     if (!token || !productId) return;
@@ -122,6 +128,11 @@ export default function EditProductPage({
   if (loading) return <p>読み込み中...</p>;
   if (!product) return <p>成果物が見つかりません。</p>;
 
+  const canList = user?.creator_profile?.can_list ?? true;
+  const canSubmit =
+    canList &&
+    (product.approval_status === "draft" || product.approval_status === "rejected");
+
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="flex flex-wrap items-center gap-2">
@@ -133,6 +144,21 @@ export default function EditProductPage({
       {product.rejection_reason && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/30">
           却下理由: {product.rejection_reason}
+        </div>
+      )}
+      {!canList && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/30">
+          <p className="font-medium">無料トライアル期間が終了しています</p>
+          <p className="mt-1 text-amber-800 dark:text-amber-200">
+            掲載申請・公開表示には基本掲載プラン（または Premium）の契約が必要です。
+            既に公開されていた成果物も一覧には表示されません。
+          </p>
+          <Link
+            href="/settings/billing"
+            className="mt-2 inline-block text-indigo-600 hover:underline dark:text-indigo-400"
+          >
+            プラン・課金設定へ
+          </Link>
         </div>
       )}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -169,7 +195,7 @@ export default function EditProductPage({
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "保存中..." : "保存"}
           </Button>
-          {(product.approval_status === "draft" || product.approval_status === "rejected") && (
+          {canSubmit && (
             <Button type="button" variant="secondary" onClick={submitForReview}>
               掲載申請する
             </Button>

@@ -33,6 +33,18 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {user?.is_creator && user.creator_profile?.can_list === false && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm dark:border-amber-900 dark:bg-amber-950/30">
+          <p className="font-medium">無料トライアル期間が終了しています</p>
+          <p className="mt-1 text-zinc-600 dark:text-zinc-400">
+            掲載申請や公開一覧への表示には基本掲載プランの契約が必要です。
+          </p>
+          <ButtonLink href="/settings/billing" className="mt-3" variant="secondary">
+            プランを確認する
+          </ButtonLink>
+        </div>
+      )}
+
       {user?.is_creator && (
         <section className="space-y-4">
           <div className="flex items-center justify-between">

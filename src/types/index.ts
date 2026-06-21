@@ -65,6 +65,7 @@ export interface CreatorProfile {
   chat_status: "open" | "supporter_only" | "closed";
   plan_type: "free_trial" | "standard" | "premium";
   trial_ends_at: string | null;
+  can_list?: boolean;
 }
 
 export interface User {
