@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { serverApi } from "@/lib/api";
 import { publicPageMetadata } from "@/lib/seo";
 import { ProductGrid } from "@/components/products/ProductGrid";
-import { ButtonLink } from "@/components/ui/Button";
+import { HomeHeroActions } from "@/components/home/HomeHeroActions";
 import type { Announcement, PaginatedResponse, Product } from "@/types";
 
 export const metadata: Metadata = publicPageMetadata({
@@ -44,14 +44,7 @@ export default async function HomePage() {
           ProductBase は個人開発者・スタートアップ向けの成果物掲載プラットフォームです。
           SEO を意識した公開ページで、あなたのプロダクトを継続的に発信できます。
         </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <ButtonLink href="/search" variant="secondary" className="!bg-white !text-indigo-700">
-            成果物を探す
-          </ButtonLink>
-          <ButtonLink href="/register" className="!bg-indigo-500 !text-white hover:!bg-indigo-400">
-            掲載者として登録
-          </ButtonLink>
-        </div>
+        <HomeHeroActions />
       </section>
 
       {error && (
