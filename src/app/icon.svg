@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="ProductBase">
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="18" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="#0B1120" />
+
+  <g fill="#FFFFFF" opacity="0.28">
+    <g transform="translate(256 148) rotate(45) translate(-20 -20)">
+      <rect width="40" height="40" rx="8" />
+    </g>
+    <g transform="translate(178 202) rotate(45) translate(-20 -20)">
+      <rect width="40" height="40" rx="8" />
+    </g>
+    <g transform="translate(334 202) rotate(45) translate(-20 -20)">
+      <rect width="40" height="40" rx="8" />
+    </g>
+    <g transform="translate(178 310) rotate(45) translate(-20 -20)">
+      <rect width="40" height="40" rx="8" />
+    </g>
+    <g transform="translate(334 310) rotate(45) translate(-20 -20)">
+      <rect width="40" height="40" rx="8" />
+    </g>
+    <g transform="translate(256 364) rotate(45) translate(-20 -20)">
+      <rect width="40" height="40" rx="8" />
+    </g>
+  </g>
+
+  <circle cx="256" cy="256" r="72" fill="#FFFFFF" opacity="0.12" />
+
+  <g transform="translate(256 256) rotate(45) translate(-52 -52)" filter="url(#glow)">
+    <rect width="104" height="104" rx="18" fill="#FFFFFF" />
+  </g>
+</svg>
