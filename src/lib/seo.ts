@@ -52,3 +52,31 @@ export function publicPageMetadata({
 
 export const DEFAULT_SITE_DESCRIPTION =
   "個人開発者・スタートアップの成果物を掲載し、SEO で発信するプラットフォーム";
+
+const META_DESCRIPTION_MAX = 160;
+
+export function buildMetaDescription(...parts: Array<string | null | undefined>): string {
+  const text = parts
+    .map((part) => part?.replace(/\s+/g, " ").trim())
+    .filter((part): part is string => Boolean(part))
+    .join(" ");
+
+  if (!text) {
+    return DEFAULT_SITE_DESCRIPTION;
+  }
+
+  if (text.length <= META_DESCRIPTION_MAX) {
+    return text;
+  }
+
+  return `${text.slice(0, META_DESCRIPTION_MAX - 1)}…`;
+}
+
+export function buildProductDescription(product: {
+  title: string;
+  catch_copy?: string | null;
+  description?: string | null;
+}): string {
+  const summary = buildMetaDescription(product.catch_copy, product.description);
+  return summary === DEFAULT_SITE_DESCRIPTION ? product.title : summary;
+}

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { serverApi } from "@/lib/api";
-import { publicPageMetadata } from "@/lib/seo";
+import { publicPageMetadata, buildProductDescription } from "@/lib/seo";
 import { DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
 import { Badge } from "@/components/ui/Badge";
 import { FavoriteButton } from "@/components/products/FavoriteButton";
@@ -31,7 +31,7 @@ export async function generateMetadata({
 
   return publicPageMetadata({
     title: product.title,
-    description: product.catch_copy ?? product.description ?? product.title,
+    description: buildProductDescription(product),
     path: `/products/${product.slug}`,
     image: product.thumbnail_url,
   });

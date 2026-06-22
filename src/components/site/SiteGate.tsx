@@ -22,7 +22,7 @@ export function SiteGate({ children }: { children: React.ReactNode }) {
   }, [hydrated, token, refreshUser]);
 
   if (!loaded) {
-    return <p className="text-center text-zinc-500 py-12">読み込み中...</p>;
+    return <>{children}</>;
   }
 
   if (config?.maintenance_mode) {
