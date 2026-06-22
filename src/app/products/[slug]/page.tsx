@@ -7,6 +7,7 @@ import { publicPageMetadata, buildProductDescription } from "@/lib/seo";
 import { DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
 import { Badge } from "@/components/ui/Badge";
 import { FavoriteButton } from "@/components/products/FavoriteButton";
+import { ProductDeveloperLine } from "@/components/products/ProductDeveloperLine";
 import { ReportButton } from "@/components/products/ReportButton";
 import { DeveloperActions } from "@/components/developers/DeveloperActions";
 import type { Product } from "@/types";
@@ -94,16 +95,10 @@ export default async function ProductDetailPage({
             <p className="text-lg text-zinc-600 dark:text-zinc-400">{product.catch_copy}</p>
           )}
           {developer && (
-            <p className="text-sm">
-              開発者:{" "}
-              {developer.slug ? (
-                <Link href={`/developers/${developer.slug}`} className="text-indigo-600 hover:underline">
-                  {developer.display_name}
-                </Link>
-              ) : (
-                developer.display_name
-              )}
-            </p>
+            <ProductDeveloperLine
+              displayName={developer.display_name}
+              slug={developer.slug}
+            />
           )}
           <div className="flex flex-wrap gap-4 text-sm text-zinc-500">
             <span>{product.view_count} PV</span>
