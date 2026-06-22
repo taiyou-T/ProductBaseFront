@@ -108,7 +108,7 @@ export default function NewProductPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Input label="タイトル" {...register("title")} />
         <Input label="キャッチコピー" {...register("catch_copy")} />
-        <Textarea label="説明" rows={5} {...register("description")} />
+        <Textarea label="説明" rows={10} {...register("description")} />
         <Input label="サービス URL" type="url" placeholder="https://..." {...register("service_url")} />
         <Controller
           name="category_id"
