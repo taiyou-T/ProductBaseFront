@@ -22,7 +22,7 @@ export function canSubmitListing(
 ): boolean {
   if (!profile || profile.can_list === false) return false;
   if (approvalStatus === "rejected") return true;
-  if (approvalStatus !== "draft") return false;
+  if (approvalStatus !== "draft" && approvalStatus !== "archived") return false;
 
   const limit = profile.listing_submission_limit ?? listingSubmissionLimit(profile.plan_type);
   const count = profile.listing_submission_count ?? 0;

@@ -154,7 +154,7 @@ export default function EditProductPage({
     canSubmitListing(profile, product.approval_status);
   const atSubmissionLimit =
     profile &&
-    product.approval_status === "draft" &&
+    (product.approval_status === "draft" || product.approval_status === "archived") &&
     !canSubmit &&
     canList;
 
@@ -169,6 +169,14 @@ export default function EditProductPage({
       {product.rejection_reason && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/30">
           却下理由: {product.rejection_reason}
+        </div>
+      )}
+      {product.approval_status === "archived" && (
+        <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-300">
+          <p className="font-medium">この成果物はアーカイブされています</p>
+          <p className="mt-1">
+            内容を編集したうえで「掲載申請する」から、再度公開申請できます。申請枠に空きがある場合のみ申請可能です。
+          </p>
         </div>
       )}
       {!canList && (
@@ -271,6 +279,7 @@ export default function EditProductPage({
           <Button type="button" variant="ghost" onClick={() => router.push("/dashboard/products")}>
             一覧へ
           </Button>
+          {product.approval_status !== "archived" && (
           <Button
             type="button"
             variant="danger"
@@ -283,6 +292,7 @@ export default function EditProductPage({
                 ? "下書きを削除"
                 : "アーカイブ"}
           </Button>
+          )}
         </div>
       </form>
     </div>
