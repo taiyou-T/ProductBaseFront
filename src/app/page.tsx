@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { serverApi } from "@/lib/api";
 import { publicPageMetadata } from "@/lib/seo";
+import { AnnouncementList } from "@/components/announcements/AnnouncementList";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { HomeHeroActions } from "@/components/home/HomeHeroActions";
 import type { Announcement, PaginatedResponse, Product } from "@/types";
@@ -73,24 +74,7 @@ export default async function HomePage() {
         <ProductGrid products={popular.data} />
       </section>
 
-      {announcements.data.length > 0 && (
-        <section>
-          <h2 className="mb-4 text-xl font-semibold">お知らせ</h2>
-          <ul className="space-y-3">
-            {announcements.data.map((a) => (
-              <li
-                key={a.id}
-                className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
-              >
-                <h3 className="font-medium">{a.title}</h3>
-                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
-                  {a.body}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <AnnouncementList announcements={announcements.data} />
     </div>
   );
 }
