@@ -12,6 +12,8 @@ import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { CategorySelect } from "@/components/products/CategorySelect";
 import { canSubmitListing, formatListingSubmissionUsage } from "@/lib/creator-plan";
+import { IMAGE_UPLOAD_MAX_LABEL } from "@/lib/constants";
+import { validateImageFileSize } from "@/lib/image-upload";
 import type { Product } from "@/types";
 
 const schema = z.object({
@@ -66,6 +68,11 @@ export default function NewProductPage() {
 
   const uploadImage = async (file: File) => {
     if (!token) return;
+    const sizeError = validateImageFileSize(file);
+    if (sizeError) {
+      setUploadError(sizeError);
+      return;
+    }
     setUploading(true);
     setUploadError(null);
     setError(null);
@@ -193,7 +200,7 @@ export default function NewProductPage() {
         <div>
           <label className="block text-sm font-medium">サムネイル</label>
           <p className="mt-0.5 text-xs text-zinc-500">
-            JPEG・PNG・GIF・WebP形式、5MB以下
+            JPEG・PNG・GIF・WebP形式、{IMAGE_UPLOAD_MAX_LABEL}以下
           </p>
           <input
             type="file"

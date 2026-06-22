@@ -3,6 +3,9 @@ import { SUBSCRIPTION_PLANS } from "@/lib/billing-plans";
 
 export const SITE_NAME = "ProductBase";
 
+export const IMAGE_UPLOAD_MAX_BYTES = 2 * 1024 * 1024;
+export const IMAGE_UPLOAD_MAX_LABEL = "2MB";
+
 export const DEVELOPMENT_STATUS_LABELS: Record<string, string> = {
   planning: "企画中",
   developing: "開発中",

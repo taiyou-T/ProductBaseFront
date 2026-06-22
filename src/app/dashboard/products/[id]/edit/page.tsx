@@ -10,7 +10,8 @@ import { useAuthStore } from "@/lib/auth-store";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { CategorySelect } from "@/components/products/CategorySelect";
-import { APPROVAL_STATUS_LABELS, DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
+import { APPROVAL_STATUS_LABELS, DEVELOPMENT_STATUS_LABELS, IMAGE_UPLOAD_MAX_LABEL } from "@/lib/constants";
+import { validateImageFileSize } from "@/lib/image-upload";
 import { canSubmitListing, formatListingSubmissionUsage } from "@/lib/creator-plan";
 import { Badge } from "@/components/ui/Badge";
 import type { Product } from "@/types";
@@ -66,6 +67,11 @@ export default function EditProductPage({
 
   const uploadImage = async (file: File) => {
     if (!token) return;
+    const sizeError = validateImageFileSize(file);
+    if (sizeError) {
+      setError(sizeError);
+      return;
+    }
     setUploading(true);
     setError(null);
     try {
@@ -227,6 +233,9 @@ export default function EditProductPage({
         </div>
         <div>
           <label className="block text-sm font-medium">サムネイル</label>
+          <p className="mt-0.5 text-xs text-zinc-500">
+            JPEG・PNG・GIF・WebP形式、{IMAGE_UPLOAD_MAX_LABEL}以下
+          </p>
           {thumbnailUrl && (
             <div className="relative mt-2 h-40 w-full max-w-xs overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
               <Image
