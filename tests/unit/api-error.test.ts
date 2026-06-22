@@ -34,6 +34,16 @@ describe("getApiErrorMessage", () => {
     );
   });
 
+  it("translates common English validation messages", () => {
+    const error = new ApiError(422, "The given data was invalid.", {
+      image: ["The image field must be an image."],
+    });
+
+    expect(getApiErrorMessage(error)).toBe(
+      "JPEG・PNG・GIF・WebP形式の画像を選択してください。",
+    );
+  });
+
   it("uses fallback for unknown errors", () => {
     expect(getApiErrorMessage(new Error("boom"), "登録に失敗しました")).toBe("登録に失敗しました");
   });

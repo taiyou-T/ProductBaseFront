@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { api, getApiErrorMessage } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
@@ -22,6 +22,7 @@ export default function EditProductPage({
 }) {
   const { id: productId } = use(params);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { token, user, refreshUser } = useAuthStore();
   const [product, setProduct] = useState<Product | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -37,6 +38,13 @@ export default function EditProductPage({
     if (!token) return;
     refreshUser().catch(() => undefined);
   }, [token, refreshUser]);
+
+  useEffect(() => {
+    if (searchParams.get("notice") === "submitted") {
+      setMessage("掲載申請を送信しました");
+      router.replace(`/dashboard/products/${productId}/edit`);
+    }
+  }, [searchParams, productId, router]);
 
   useEffect(() => {
     if (!token || !productId) return;
