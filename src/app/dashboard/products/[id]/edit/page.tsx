@@ -4,7 +4,7 @@ import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { api, getApiErrorMessage } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { Input, Textarea } from "@/components/ui/Input";
@@ -29,7 +29,7 @@ export default function EditProductPage({
   const [deleting, setDeleting] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  const { register, handleSubmit, reset, setValue, watch, formState: { isSubmitting } } = useForm();
+  const { register, handleSubmit, reset, setValue, watch, control, formState: { isSubmitting } } = useForm();
   const thumbnailUrl = watch("thumbnail_url");
 
   useEffect(() => {
@@ -169,7 +169,19 @@ export default function EditProductPage({
         <Input label="キャッチコピー" {...register("catch_copy")} />
         <Textarea label="説明" rows={5} {...register("description")} />
         <Input label="サービス URL" {...register("service_url")} />
-        <CategorySelect {...register("category_id")} />
+        <Controller
+          name="category_id"
+          control={control}
+          render={({ field }) => (
+            <CategorySelect
+              value={field.value ?? ""}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              name={field.name}
+              ref={field.ref}
+            />
+          )}
+        />
         <div>
           <label className="block text-sm font-medium">サムネイル</label>
           {thumbnailUrl && (

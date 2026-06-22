@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import type { Category } from "@/types";
 
@@ -9,44 +9,54 @@ const selectClassName =
 
 type CategorySelectProps = {
   label?: string;
-} & React.SelectHTMLAttributes<HTMLSelectElement>;
+  value?: string;
+  onChange?: React.ChangeEventHandler<HTMLSelectElement>;
+  onBlur?: React.ChangeEventHandler<HTMLSelectElement>;
+  name?: string;
+  disabled?: boolean;
+};
 
-export function CategorySelect({
-  label = "カテゴリ",
-  disabled,
-  ...props
-}: CategorySelectProps) {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export const CategorySelect = forwardRef<HTMLSelectElement, CategorySelectProps>(
+  function CategorySelect(
+    { label = "カテゴリ", value = "", onChange, onBlur, name, disabled },
+    ref,
+  ) {
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    api<{ data: Category[] }>("/public/categories")
-      .then((res) => setCategories(res.data))
-      .catch(() => setError("カテゴリの取得に失敗しました"))
-      .finally(() => setLoading(false));
-  }, []);
+    useEffect(() => {
+      api<{ data: Category[] }>("/public/categories")
+        .then((res) => setCategories(res.data))
+        .catch(() => setError("カテゴリの取得に失敗しました"))
+        .finally(() => setLoading(false));
+    }, []);
 
-  return (
-    <div className="space-y-1">
-      {label && (
-        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          {label}
-        </label>
-      )}
-      <select
-        className={selectClassName}
-        disabled={disabled || loading}
-        {...props}
-      >
-        <option value="">{loading ? "読み込み中..." : "未選択"}</option>
-        {categories.map((category) => (
-          <option key={category.id} value={category.id}>
-            {category.name}
-          </option>
-        ))}
-      </select>
-      {error && <p className="text-sm text-red-600">{error}</p>}
-    </div>
-  );
-}
+    return (
+      <div className="space-y-1">
+        {label && (
+          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            {label}
+          </label>
+        )}
+        <select
+          ref={ref}
+          name={name}
+          value={loading ? "" : value}
+          onChange={onChange}
+          onBlur={onBlur}
+          disabled={disabled || loading}
+          className={selectClassName}
+        >
+          <option value="">{loading ? "読み込み中..." : "未選択"}</option>
+          {categories.map((category) => (
+            <option key={category.id} value={String(category.id)}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+        {error && <p className="text-sm text-red-600">{error}</p>}
+      </div>
+    );
+  },
+);

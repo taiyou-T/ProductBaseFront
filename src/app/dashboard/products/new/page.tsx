@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api, getApiErrorMessage } from "@/lib/api";
@@ -39,7 +39,7 @@ export default function NewProductPage() {
       .finally(() => setCheckingCreator(false));
   }, [token, refreshUser]);
 
-  const { register, handleSubmit, setValue, watch, formState: { isSubmitting } } = useForm({
+  const { register, handleSubmit, setValue, watch, control, formState: { isSubmitting } } = useForm({
     resolver: zodResolver(schema),
     defaultValues: { development_status: "planning" },
   });
@@ -110,7 +110,19 @@ export default function NewProductPage() {
         <Input label="キャッチコピー" {...register("catch_copy")} />
         <Textarea label="説明" rows={5} {...register("description")} />
         <Input label="サービス URL" type="url" placeholder="https://..." {...register("service_url")} />
-        <CategorySelect {...register("category_id")} />
+        <Controller
+          name="category_id"
+          control={control}
+          render={({ field }) => (
+            <CategorySelect
+              value={field.value ?? ""}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              name={field.name}
+              ref={field.ref}
+            />
+          )}
+        />
         <div>
           <label className="block text-sm font-medium">サムネイル</label>
           <input
