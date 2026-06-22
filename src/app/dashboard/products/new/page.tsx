@@ -10,6 +10,7 @@ import { api, getApiErrorMessage } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { CategorySelect } from "@/components/products/CategorySelect";
 import type { Product } from "@/types";
 
 const schema = z.object({
@@ -17,7 +18,7 @@ const schema = z.object({
   catch_copy: z.string().optional(),
   description: z.string().optional(),
   service_url: z.string().url().optional().or(z.literal("")),
-  category_id: z.coerce.number().optional(),
+  category_id: z.string().optional(),
   development_status: z.enum([
     "planning", "developing", "testing", "beta", "released", "ended",
   ]),
@@ -68,7 +69,7 @@ export default function NewProductPage() {
       const body = {
         ...data,
         service_url: data.service_url || undefined,
-        category_id: data.category_id || undefined,
+        category_id: data.category_id ? Number(data.category_id) : undefined,
       };
       const res = await api<{ product: Product }>("/creator/products", {
         method: "POST",
@@ -109,6 +110,7 @@ export default function NewProductPage() {
         <Input label="キャッチコピー" {...register("catch_copy")} />
         <Textarea label="説明" rows={5} {...register("description")} />
         <Input label="サービス URL" type="url" placeholder="https://..." {...register("service_url")} />
+        <CategorySelect {...register("category_id")} />
         <div>
           <label className="block text-sm font-medium">サムネイル</label>
           <input

@@ -9,6 +9,7 @@ import { api, getApiErrorMessage } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { CategorySelect } from "@/components/products/CategorySelect";
 import { APPROVAL_STATUS_LABELS } from "@/lib/constants";
 import { Badge } from "@/components/ui/Badge";
 import type { Product } from "@/types";
@@ -47,6 +48,7 @@ export default function EditProductPage({
           description: res.data.description ?? "",
           service_url: res.data.service_url ?? "",
           thumbnail_url: res.data.thumbnail_url ?? "",
+          category_id: res.data.category?.id != null ? String(res.data.category.id) : "",
         });
       })
       .finally(() => setLoading(false));
@@ -81,6 +83,7 @@ export default function EditProductPage({
         ...data,
         service_url: data.service_url || undefined,
         thumbnail_url: data.thumbnail_url || undefined,
+        category_id: data.category_id ? Number(data.category_id) : null,
       };
       await api(`/creator/products/${productId}`, {
         method: "PUT",
@@ -166,6 +169,7 @@ export default function EditProductPage({
         <Input label="キャッチコピー" {...register("catch_copy")} />
         <Textarea label="説明" rows={5} {...register("description")} />
         <Input label="サービス URL" {...register("service_url")} />
+        <CategorySelect {...register("category_id")} />
         <div>
           <label className="block text-sm font-medium">サムネイル</label>
           {thumbnailUrl && (
