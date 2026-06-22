@@ -96,9 +96,13 @@ export default async function ProductDetailPage({
           {developer && (
             <p className="text-sm">
               開発者:{" "}
-              <Link href={`/developers/${developer.slug}`} className="text-indigo-600 hover:underline">
-                {developer.display_name}
-              </Link>
+              {developer.slug ? (
+                <Link href={`/developers/${developer.slug}`} className="text-indigo-600 hover:underline">
+                  {developer.display_name}
+                </Link>
+              ) : (
+                developer.display_name
+              )}
             </p>
           )}
           <div className="flex flex-wrap gap-4 text-sm text-zinc-500">
