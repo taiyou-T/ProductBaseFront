@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuthStore } from "@/lib/auth-store";
 import { api, getApiErrorMessage } from "@/lib/api";
+import { formatListingSubmissionUsage } from "@/lib/creator-plan";
 import { ButtonLink } from "@/components/ui/Button";
 import { APPROVAL_STATUS_LABELS } from "@/lib/constants";
 import { Badge } from "@/components/ui/Badge";
 import type { PaginatedResponse, Product } from "@/types";
 
 export default function DashboardProductsPage() {
-  const { token } = useAuthStore();
+  const { token, user, refreshUser } = useAuthStore();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<number | null>(null);
@@ -23,6 +24,11 @@ export default function DashboardProductsPage() {
       .then((res) => setProducts(res.data))
       .finally(() => setLoading(false));
   };
+
+  useEffect(() => {
+    if (!token) return;
+    refreshUser().catch(() => undefined);
+  }, [token, refreshUser]);
 
   useEffect(() => {
     loadProducts();
@@ -46,12 +52,20 @@ export default function DashboardProductsPage() {
 
   if (loading) return <p>読み込み中...</p>;
 
+  const profile = user?.creator_profile;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">成果物管理</h1>
         <ButtonLink href="/dashboard/products/new">新規作成</ButtonLink>
       </div>
+      {profile && (
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          掲載申請枠: <span className="font-medium text-zinc-900 dark:text-zinc-100">{formatListingSubmissionUsage(profile)}</span>
+          <span className="ml-2 text-zinc-500">（下書きは枠に含みません）</span>
+        </p>
+      )}
       {error && <p className="text-sm text-red-600">{error}</p>}
       {products.length === 0 ? (
         <p className="text-zinc-500">成果物がありません。</p>

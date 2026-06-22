@@ -66,6 +66,8 @@ export interface CreatorProfile {
   plan_type: "free_trial" | "standard" | "premium";
   trial_ends_at: string | null;
   can_list?: boolean;
+  listing_submission_limit?: number;
+  listing_submission_count?: number;
 }
 
 export interface User {

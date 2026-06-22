@@ -8,6 +8,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { APPROVAL_STATUS_LABELS } from "@/lib/constants";
 import {
   CREATOR_PLAN_LABELS,
+  formatListingSubmissionUsage,
   formatTrialEndDate,
   trialDaysRemaining,
 } from "@/lib/creator-plan";
@@ -84,10 +85,20 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {user?.is_creator && profile && profile.plan_type !== "free_trial" && (
+      {user?.is_creator && profile && (
         <div className="rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm dark:border-zinc-800 dark:bg-zinc-900">
-          <span className="text-zinc-500">掲載プラン: </span>
-          <span className="font-medium">{CREATOR_PLAN_LABELS[profile.plan_type]}</span>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            {profile.plan_type !== "free_trial" && (
+              <p>
+                <span className="text-zinc-500">掲載プラン: </span>
+                <span className="font-medium">{CREATOR_PLAN_LABELS[profile.plan_type]}</span>
+              </p>
+            )}
+            <p>
+              <span className="text-zinc-500">掲載申請枠: </span>
+              <span className="font-medium">{formatListingSubmissionUsage(profile)}</span>
+            </p>
+          </div>
         </div>
       )}
 

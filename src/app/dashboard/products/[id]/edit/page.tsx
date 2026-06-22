@@ -11,6 +11,7 @@ import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { CategorySelect } from "@/components/products/CategorySelect";
 import { APPROVAL_STATUS_LABELS } from "@/lib/constants";
+import { canSubmitListing, formatListingSubmissionUsage } from "@/lib/creator-plan";
 import { Badge } from "@/components/ui/Badge";
 import type { Product } from "@/types";
 
@@ -101,6 +102,7 @@ export default function EditProductPage({
     try {
       await api(`/creator/products/${productId}/submit`, { method: "POST" }, token);
       setMessage("掲載申請を送信しました");
+      await refreshUser();
       const res = await api<{ data: Product }>(`/creator/products/${productId}`, {}, token);
       setProduct(res.data);
     } catch (e) {
@@ -132,9 +134,14 @@ export default function EditProductPage({
   if (!product) return <p>成果物が見つかりません。</p>;
 
   const canList = user?.creator_profile?.can_list ?? true;
+  const profile = user?.creator_profile;
   const canSubmit =
-    canList &&
-    (product.approval_status === "draft" || product.approval_status === "rejected");
+    canSubmitListing(profile, product.approval_status);
+  const atSubmissionLimit =
+    profile &&
+    product.approval_status === "draft" &&
+    !canSubmit &&
+    canList;
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -155,6 +162,20 @@ export default function EditProductPage({
           <p className="mt-1 text-amber-800 dark:text-amber-200">
             掲載申請・公開表示には基本掲載プラン（または Premium）の契約が必要です。
             既に公開されていた成果物も一覧には表示されません。
+          </p>
+          <Link
+            href="/settings/billing"
+            className="mt-2 inline-block text-indigo-600 hover:underline dark:text-indigo-400"
+          >
+            プラン・課金設定へ
+          </Link>
+        </div>
+      )}
+      {atSubmissionLimit && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/30">
+          <p className="font-medium">掲載申請の上限に達しています</p>
+          <p className="mt-1 text-amber-800 dark:text-amber-200">
+            現在 {formatListingSubmissionUsage(profile)} です。新しい成果物を申請するには、既存成果物をアーカイブするか Premium プランへ変更してください。
           </p>
           <Link
             href="/settings/billing"
