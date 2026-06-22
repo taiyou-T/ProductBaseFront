@@ -1,4 +1,5 @@
 import type { SubscriptionPlanType } from "@/types";
+import { SUBSCRIPTION_PLANS } from "@/lib/billing-plans";
 
 export const SITE_NAME = "ProductBase";
 
@@ -33,29 +34,7 @@ export const REPORT_REASONS = [
   { value: "other", label: "その他" },
 ] as const;
 
-export const SUBSCRIPTION_PLANS = [
-  {
-    type: "supporter" as const,
-    name: "詳細閲覧・チャット",
-    description: "お気に入り上限拡大・閲覧履歴・掲載者へのチャット",
-    price: "¥500/月",
-    requiresCreator: false,
-  },
-  {
-    type: "standard" as const,
-    name: "基本掲載",
-    description: "成果物の掲載・管理（掲載者向け）",
-    price: "¥500/月",
-    requiresCreator: true,
-  },
-  {
-    type: "premium" as const,
-    name: "Premium 掲載",
-    description: "掲載者向け上位プラン",
-    price: "¥1,500/月",
-    requiresCreator: true,
-  },
-] as const;
+export { SUBSCRIPTION_PLANS } from "@/lib/billing-plans";
 
 export const SUBSCRIPTION_STATUS_LABELS: Record<string, string> = {
   active: "加入中",
