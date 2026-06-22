@@ -2,12 +2,14 @@ type ProductListParams = {
   sort?: string;
   category?: string;
   tag?: string;
+  development_status?: string;
 };
 
 type SearchParams = {
   q?: string;
   sort?: string;
   category?: string;
+  development_status?: string;
 };
 
 function appendParam(query: URLSearchParams, key: string, value?: string) {
@@ -21,6 +23,7 @@ export function buildProductsUrl(params: ProductListParams = {}): string {
   appendParam(query, "sort", params.sort && params.sort !== "newest" ? params.sort : undefined);
   appendParam(query, "category", params.category);
   appendParam(query, "tag", params.tag);
+  appendParam(query, "development_status", params.development_status);
   const serialized = query.toString();
   return serialized ? `/products?${serialized}` : "/products";
 }
@@ -30,6 +33,7 @@ export function buildSearchUrl(params: SearchParams = {}): string {
   appendParam(query, "q", params.q?.trim() || undefined);
   appendParam(query, "sort", params.sort && params.sort !== "newest" ? params.sort : undefined);
   appendParam(query, "category", params.category);
+  appendParam(query, "development_status", params.development_status);
   const serialized = query.toString();
   return serialized ? `/search?${serialized}` : "/search";
 }

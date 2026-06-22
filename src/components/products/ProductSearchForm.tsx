@@ -1,4 +1,4 @@
-import { SORT_OPTIONS } from "@/lib/constants";
+import { SORT_OPTIONS, DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
 import type { Category } from "@/types";
 
 const fieldClassName =
@@ -7,11 +7,13 @@ const fieldClassName =
 export function ProductSearchForm({
   q = "",
   category = "",
+  development_status = "",
   sort = "newest",
   categories,
 }: {
   q?: string;
   category?: string;
+  development_status?: string;
   sort?: string;
   categories: Category[];
 }) {
@@ -30,7 +32,7 @@ export function ProductSearchForm({
           className={`${fieldClassName} py-2.5 text-base sm:text-sm`}
         />
         <p className="text-xs text-zinc-500">
-          部分一致で検索します。カテゴリだけの絞り込みもできます。
+          部分一致で検索します。カテゴリや開発ステータスだけの絞り込みもできます。
         </p>
       </div>
 
@@ -49,6 +51,25 @@ export function ProductSearchForm({
             {categories.map((item) => (
               <option key={item.id} value={item.slug}>
                 {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="w-full sm:w-48">
+          <label htmlFor="product-search-development-status" className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            開発ステータス
+          </label>
+          <select
+            id="product-search-development-status"
+            name="development_status"
+            defaultValue={development_status}
+            className={fieldClassName}
+          >
+            <option value="">すべて</option>
+            {Object.entries(DEVELOPMENT_STATUS_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
               </option>
             ))}
           </select>

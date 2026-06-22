@@ -12,18 +12,20 @@ export function ProductCategoryFilter({
   activeSlug,
   sort,
   tag,
+  development_status,
 }: {
   categories: Category[];
   activeSlug?: string;
   sort?: string;
   tag?: string;
+  development_status?: string;
 }) {
   return (
     <div className="space-y-2">
       <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">カテゴリ</p>
       <div className="flex flex-wrap gap-2">
         <Link
-          href={buildProductsUrl({ sort, tag })}
+          href={buildProductsUrl({ sort, tag, development_status })}
           className={`rounded-full px-3 py-1 text-sm ${chipClass(!activeSlug)}`}
         >
           すべて
@@ -31,7 +33,7 @@ export function ProductCategoryFilter({
         {categories.map((category) => (
           <Link
             key={category.id}
-            href={buildProductsUrl({ sort, category: category.slug, tag })}
+            href={buildProductsUrl({ sort, category: category.slug, tag, development_status })}
             className={`rounded-full px-3 py-1 text-sm ${chipClass(activeSlug === category.slug)}`}
           >
             {category.name}

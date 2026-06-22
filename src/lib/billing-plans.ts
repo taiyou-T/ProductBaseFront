@@ -60,7 +60,7 @@ export const SUBSCRIPTION_PLANS = [
     audience: "掲載者向け",
     name: "Premium 掲載",
     description: "より本格的に掲載・ブランディングしたい掲載者向けの上位プランです。",
-    price: "¥1,500/月",
+    price: "¥2,980/月",
     features: [
       "基本掲載プランのすべての機能",
       "掲載申請 最大10件",

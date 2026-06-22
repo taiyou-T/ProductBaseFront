@@ -5,8 +5,9 @@ import { getPublicCategories } from "@/lib/categories";
 import { buildProductsUrl } from "@/lib/product-filters";
 import { publicPageMetadata } from "@/lib/seo";
 import { ProductCategoryFilter } from "@/components/products/ProductCategoryFilter";
+import { ProductDevelopmentStatusFilter } from "@/components/products/ProductDevelopmentStatusFilter";
 import { ProductGrid } from "@/components/products/ProductGrid";
-import { SORT_OPTIONS } from "@/lib/constants";
+import { SORT_OPTIONS, DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
 import type { PaginatedResponse, Product } from "@/types";
 
 export const metadata: Metadata = publicPageMetadata({
@@ -18,16 +19,18 @@ export const metadata: Metadata = publicPageMetadata({
 export default async function ProductsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ sort?: string; category?: string; tag?: string }>;
+  searchParams: Promise<{ sort?: string; category?: string; tag?: string; development_status?: string }>;
 }) {
   const params = await searchParams;
   const sort = params.sort ?? "newest";
   const category = params.category ?? "";
   const tag = params.tag ?? "";
+  const developmentStatus = params.development_status ?? "";
 
   const query = new URLSearchParams({ sort, per_page: "20" });
   if (category) query.set("category", category);
   if (tag) query.set("tag", tag);
+  if (developmentStatus) query.set("development_status", developmentStatus);
 
   const [categories, productsResult] = await Promise.all([
     getPublicCategories(),
@@ -38,14 +41,19 @@ export default async function ProductsPage({
 
   const products = productsResult.data;
   const activeCategory = categories.find((item) => item.slug === category);
+  const activeDevelopmentStatus = developmentStatus
+    ? DEVELOPMENT_STATUS_LABELS[developmentStatus]
+    : undefined;
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">成果物一覧</h1>
-        {activeCategory && (
+        {(activeCategory || activeDevelopmentStatus) && (
           <p className="mt-1 text-sm text-zinc-500">
-            カテゴリ: {activeCategory.name}
+            {activeCategory && <>カテゴリ: {activeCategory.name}</>}
+            {activeCategory && activeDevelopmentStatus && " / "}
+            {activeDevelopmentStatus && <>開発ステータス: {activeDevelopmentStatus}</>}
           </p>
         )}
       </div>
@@ -56,7 +64,12 @@ export default async function ProductsPage({
           {SORT_OPTIONS.map((opt) => (
             <Link
               key={opt.value}
-              href={buildProductsUrl({ sort: opt.value, category: category || undefined, tag: tag || undefined })}
+              href={buildProductsUrl({
+                sort: opt.value,
+                category: category || undefined,
+                tag: tag || undefined,
+                development_status: developmentStatus || undefined,
+              })}
               className={`rounded-full px-3 py-1 text-sm ${
                 sort === opt.value
                   ? "bg-indigo-600 text-white"
@@ -69,11 +82,19 @@ export default async function ProductsPage({
         </div>
       </div>
 
+      <ProductDevelopmentStatusFilter
+        activeStatus={developmentStatus || undefined}
+        sort={sort}
+        category={category || undefined}
+        tag={tag || undefined}
+      />
+
       <ProductCategoryFilter
         categories={categories}
         activeSlug={category || undefined}
         sort={sort}
         tag={tag || undefined}
+        development_status={developmentStatus || undefined}
       />
 
       <ProductGrid products={products} />

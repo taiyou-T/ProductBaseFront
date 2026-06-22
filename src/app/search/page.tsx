@@ -4,6 +4,7 @@ import { ProductGrid } from "@/components/products/ProductGrid";
 import { ProductSearchForm } from "@/components/products/ProductSearchForm";
 import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/seo";
+import { DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
 import type { PaginatedResponse, Product } from "@/types";
 
 export const metadata: Metadata = publicPageMetadata({
@@ -15,13 +16,14 @@ export const metadata: Metadata = publicPageMetadata({
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; sort?: string; category?: string }>;
+  searchParams: Promise<{ q?: string; sort?: string; category?: string; development_status?: string }>;
 }) {
   const params = await searchParams;
   const q = params.q?.trim() ?? "";
   const sort = params.sort ?? "newest";
   const category = params.category ?? "";
-  const hasFilters = Boolean(q || category);
+  const developmentStatus = params.development_status ?? "";
+  const hasFilters = Boolean(q || category || developmentStatus);
 
   const categories = await getPublicCategories();
 
@@ -31,6 +33,7 @@ export default async function SearchPage({
       const query = new URLSearchParams({ sort, per_page: "20" });
       if (q) query.set("q", q);
       if (category) query.set("category", category);
+      if (developmentStatus) query.set("development_status", developmentStatus);
       const res = await serverApi<PaginatedResponse<Product>>(
         `/public/products?${query.toString()}`,
         0,
@@ -42,6 +45,9 @@ export default async function SearchPage({
   }
 
   const activeCategory = categories.find((item) => item.slug === category);
+  const activeDevelopmentStatus = developmentStatus
+    ? DEVELOPMENT_STATUS_LABELS[developmentStatus]
+    : undefined;
 
   return (
     <div className="space-y-6">
@@ -49,15 +55,18 @@ export default async function SearchPage({
       <ProductSearchForm
         q={q}
         category={category}
+        development_status={developmentStatus}
         sort={sort}
         categories={categories}
       />
       {hasFilters && (
         <p className="text-sm text-zinc-500">
           {q && <>「{q}」</>}
-          {q && activeCategory && " / "}
+          {q && (activeCategory || activeDevelopmentStatus) && " / "}
           {activeCategory && <>カテゴリ: {activeCategory.name}</>}
-          {!q && !activeCategory && "条件"}
+          {activeCategory && activeDevelopmentStatus && " / "}
+          {activeDevelopmentStatus && <>開発ステータス: {activeDevelopmentStatus}</>}
+          {!q && !activeCategory && !activeDevelopmentStatus && "条件"}
           の検索結果: {products.length} 件
         </p>
       )}
@@ -65,7 +74,7 @@ export default async function SearchPage({
         <ProductGrid products={products} />
       ) : (
         <p className="text-sm text-zinc-500">
-          キーワードまたはカテゴリを指定して検索してください。
+          キーワード、カテゴリ、または開発ステータスを指定して検索してください。
         </p>
       )}
     </div>
