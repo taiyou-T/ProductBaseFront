@@ -198,7 +198,7 @@ export default function BillingPage() {
                   <Link href="/dashboard/onboarding" className="mx-1 text-indigo-600 hover:underline dark:text-indigo-400">
                     掲載者プロフィールを作成
                   </Link>
-                  して、6ヶ月の無料トライアルを開始できます。
+                  して、無料トライアルを開始できます。
                 </p>
               )}
             </section>
