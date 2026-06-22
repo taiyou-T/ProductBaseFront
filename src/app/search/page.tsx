@@ -1,29 +1,36 @@
 import { serverApi } from "@/lib/api";
+import { getPublicCategories } from "@/lib/categories";
 import { ProductGrid } from "@/components/products/ProductGrid";
-import { Input } from "@/components/ui/Input";
+import { ProductSearchForm } from "@/components/products/ProductSearchForm";
 import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/seo";
 import type { PaginatedResponse, Product } from "@/types";
 
 export const metadata: Metadata = publicPageMetadata({
   title: "検索",
-  description: "ProductBase の成果物をキーワードで検索できます。",
+  description: "ProductBase の成果物をキーワードやカテゴリで検索できます。",
   path: "/search",
 });
 
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; sort?: string }>;
+  searchParams: Promise<{ q?: string; sort?: string; category?: string }>;
 }) {
   const params = await searchParams;
-  const q = params.q ?? "";
+  const q = params.q?.trim() ?? "";
   const sort = params.sort ?? "newest";
+  const category = params.category ?? "";
+  const hasFilters = Boolean(q || category);
+
+  const categories = await getPublicCategories();
 
   let products: Product[] = [];
-  if (q) {
+  if (hasFilters) {
     try {
-      const query = new URLSearchParams({ q, sort, per_page: "20" });
+      const query = new URLSearchParams({ sort, per_page: "20" });
+      if (q) query.set("q", q);
+      if (category) query.set("category", category);
       const res = await serverApi<PaginatedResponse<Product>>(
         `/public/products?${query.toString()}`,
         0,
@@ -34,29 +41,33 @@ export default async function SearchPage({
     }
   }
 
+  const activeCategory = categories.find((item) => item.slug === category);
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">成果物を検索</h1>
-      <form action="/search" method="GET" className="flex gap-2">
-        <Input
-          name="q"
-          defaultValue={q}
-          placeholder="キーワード（React, Laravel など）"
-          className="flex-1"
-        />
-        <button
-          type="submit"
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-500"
-        >
-          検索
-        </button>
-      </form>
-      {q && (
+      <ProductSearchForm
+        q={q}
+        category={category}
+        sort={sort}
+        categories={categories}
+      />
+      {hasFilters && (
         <p className="text-sm text-zinc-500">
-          「{q}」の検索結果: {products.length} 件
+          {q && <>「{q}」</>}
+          {q && activeCategory && " / "}
+          {activeCategory && <>カテゴリ: {activeCategory.name}</>}
+          {!q && !activeCategory && "条件"}
+          の検索結果: {products.length} 件
         </p>
       )}
-      <ProductGrid products={products} />
+      {hasFilters ? (
+        <ProductGrid products={products} />
+      ) : (
+        <p className="text-sm text-zinc-500">
+          キーワードまたはカテゴリを指定して検索してください。
+        </p>
+      )}
     </div>
   );
 }
