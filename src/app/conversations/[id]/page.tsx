@@ -30,8 +30,7 @@ export default function ConversationDetailPage() {
 
   useEffect(load, [token, params.id]);
 
-  const send = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const send = async () => {
     if (!token || !message.trim()) return;
     setSending(true);
     setError(null);
@@ -80,7 +79,7 @@ export default function ConversationDetailPage() {
                         : "mr-8 bg-zinc-100 dark:bg-zinc-800"
                     }`}
                   >
-                    <p>{m.message}</p>
+                    <p className="whitespace-pre-wrap">{m.message}</p>
                     <time dateTime={m.created_at} className="mt-1 block text-xs text-zinc-400">
                       {formatJapanDatetime(m.created_at)}
                     </time>
@@ -88,18 +87,19 @@ export default function ConversationDetailPage() {
                 ))
               )}
             </div>
-            <form onSubmit={send} className="flex gap-2">
-              <input
+            <div className="flex items-end gap-2">
+              <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 maxLength={2000}
+                rows={3}
                 placeholder="メッセージを入力..."
-                className="flex-1 rounded-lg border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+                className="flex-1 resize-y rounded-lg border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-950"
               />
-              <Button type="submit" disabled={sending || !message.trim()}>
+              <Button type="button" onClick={send} disabled={sending || !message.trim()}>
                 {sending ? "送信中..." : "送信"}
               </Button>
-            </form>
+            </div>
             {error && <p className="text-sm text-red-600">{error}</p>}
           </>
         )}
