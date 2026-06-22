@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import { api, getApiErrorMessage } from "@/lib/api";
 import { getConversationPartnerDisplayName } from "@/lib/conversation-partner";
+import { formatJapanDatetime } from "@/lib/datetime";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { Button } from "@/components/ui/Button";
 import type { Conversation } from "@/types";
@@ -80,9 +81,9 @@ export default function ConversationDetailPage() {
                     }`}
                   >
                     <p>{m.message}</p>
-                    <p className="mt-1 text-xs text-zinc-400">
-                      {new Date(m.created_at).toLocaleString("ja-JP")}
-                    </p>
+                    <time dateTime={m.created_at} className="mt-1 block text-xs text-zinc-400">
+                      {formatJapanDatetime(m.created_at)}
+                    </time>
                   </div>
                 ))
               )}

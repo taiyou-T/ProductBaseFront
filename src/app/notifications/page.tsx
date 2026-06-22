@@ -5,6 +5,7 @@ import { useAuthStore } from "@/lib/auth-store";
 import { api } from "@/lib/api";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { Button } from "@/components/ui/Button";
+import { NotificationItem } from "@/components/notifications/NotificationItem";
 import type { Notification, PaginatedResponse } from "@/types";
 
 export default function NotificationsPage() {
@@ -56,25 +57,7 @@ export default function NotificationsPage() {
         ) : (
           <ul className="divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
             {notifications.map((n) => (
-              <li
-                key={n.id}
-                className={`p-4 ${!n.is_read ? "bg-indigo-50/50 dark:bg-indigo-950/20" : ""}`}
-              >
-                <div className="flex flex-wrap items-start justify-between gap-2">
-                  <div>
-                    <p className="font-medium">{n.title}</p>
-                    <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{n.body}</p>
-                    <p className="mt-2 text-xs text-zinc-400">
-                      {new Date(n.created_at).toLocaleString("ja-JP")}
-                    </p>
-                  </div>
-                  {!n.is_read && (
-                    <Button type="button" variant="ghost" onClick={() => markRead(n.id)} className="!px-2 !py-1 text-xs">
-                      既読
-                    </Button>
-                  )}
-                </div>
-              </li>
+              <NotificationItem key={n.id} notification={n} onMarkRead={markRead} />
             ))}
           </ul>
         )}

@@ -6,6 +6,7 @@ import { useAuthStore } from "@/lib/auth-store";
 import { api, getApiErrorMessage } from "@/lib/api";
 import { canAccessChat } from "@/lib/chat-access";
 import { getConversationPartnerDisplayName } from "@/lib/conversation-partner";
+import { formatJapanDatetime } from "@/lib/datetime";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import type { Conversation, PaginatedResponse } from "@/types";
 
@@ -71,9 +72,9 @@ export default function ConversationsPage() {
                   {preview && (
                     <p className="mt-1 truncate text-sm text-zinc-500">{preview}</p>
                   )}
-                  <p className="mt-1 text-xs text-zinc-400">
-                    {new Date(c.created_at).toLocaleString("ja-JP")}
-                  </p>
+                  <time dateTime={c.created_at} className="mt-1 block text-xs text-zinc-400">
+                    {formatJapanDatetime(c.created_at)}
+                  </time>
                 </Link>
               </li>
               );
