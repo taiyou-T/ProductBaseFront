@@ -10,7 +10,7 @@ import { useAuthStore } from "@/lib/auth-store";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { CategorySelect } from "@/components/products/CategorySelect";
-import { APPROVAL_STATUS_LABELS } from "@/lib/constants";
+import { APPROVAL_STATUS_LABELS, DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
 import { canSubmitListing, formatListingSubmissionUsage } from "@/lib/creator-plan";
 import { Badge } from "@/components/ui/Badge";
 import type { Product } from "@/types";
@@ -50,6 +50,7 @@ export default function EditProductPage({
           service_url: res.data.service_url ?? "",
           thumbnail_url: res.data.thumbnail_url ?? "",
           category_id: res.data.category?.id != null ? String(res.data.category.id) : "",
+          development_status: res.data.development_status,
         });
       })
       .finally(() => setLoading(false));
@@ -203,6 +204,19 @@ export default function EditProductPage({
             />
           )}
         />
+        <div>
+          <label className="block text-sm font-medium">開発ステータス</label>
+          <select
+            className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+            {...register("development_status")}
+          >
+            {Object.entries(DEVELOPMENT_STATUS_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
         <div>
           <label className="block text-sm font-medium">サムネイル</label>
           {thumbnailUrl && (
