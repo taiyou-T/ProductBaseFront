@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Product } from "@/types";
 import { DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
+import { productPublicPath } from "@/lib/public-paths";
 import { Badge } from "@/components/ui/Badge";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -11,7 +12,7 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <Link
-      href={`/products/${product.slug}`}
+      href={productPublicPath(product)}
       className="group flex flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm transition hover:border-indigo-300 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
     >
       <div className="relative aspect-video bg-zinc-100 dark:bg-zinc-800">

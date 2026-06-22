@@ -29,13 +29,13 @@ export function SiteNavigation() {
     }
   }, [token, clearAuth]);
 
-  const desktopLinks = getDesktopNavLinks(hydrated ? user : null);
+  const desktopLinks = getDesktopNavLinks(hydrated && token ? user : null);
 
   return (
     <>
       <Header
         desktopLinks={desktopLinks}
-        user={hydrated ? user : null}
+        user={hydrated && token ? user : null}
         onLogout={handleLogout}
         mobileActions={
           <>
@@ -51,7 +51,7 @@ export function SiteNavigation() {
           </>
         }
         guestActions={
-          hydrated && !user ? (
+          hydrated && !token ? (
             <div className="hidden items-center gap-2 md:flex">
               <Link href="/login" className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400">
                 ログイン
@@ -65,12 +65,12 @@ export function SiteNavigation() {
       <MobileMenu
         open={menuOpen}
         onClose={closeMenu}
-        user={hydrated ? user : null}
+        user={hydrated && token ? user : null}
         onLogout={handleLogout}
       />
 
       <BottomTabBar
-        user={hydrated ? user : null}
+        user={hydrated && token ? user : null}
         onMenuOpen={() => setMenuOpen(true)}
         menuOpen={menuOpen}
       />

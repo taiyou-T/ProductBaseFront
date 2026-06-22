@@ -2,13 +2,16 @@
 
 import Link from "next/link";
 import { useAuthStore } from "@/lib/auth-store";
+import { developerPublicPath } from "@/lib/public-paths";
 
 export function ProductDeveloperLine({
   displayName,
   slug,
+  userId,
 }: {
   displayName: string;
   slug?: string | null;
+  userId?: number | null;
 }) {
   const { user, hydrated } = useAuthStore();
 
@@ -16,11 +19,15 @@ export function ProductDeveloperLine({
     return null;
   }
 
+  const href = slug && userId != null
+    ? developerPublicPath({ user_id: userId, slug })
+    : null;
+
   return (
     <p className="text-sm">
       開発者:{" "}
-      {slug ? (
-        <Link href={`/developers/${slug}`} className="text-indigo-600 hover:underline">
+      {href ? (
+        <Link href={href} className="text-indigo-600 hover:underline">
           {displayName}
         </Link>
       ) : (

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getSiteUrl, serverApi } from "@/lib/api";
+import { developerPublicPath, productPublicPath } from "@/lib/public-paths";
 import type { Category, PaginatedResponse, Product, Tag } from "@/types";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -20,20 +21,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]);
 
   const productRoutes: MetadataRoute.Sitemap = products.map((p) => ({
-    url: `${siteUrl}/products/${p.slug}`,
+    url: `${siteUrl}${productPublicPath(p)}`,
     lastModified: p.updated_at ? new Date(p.updated_at) : now,
     changeFrequency: "weekly",
     priority: 0.8,
   }));
 
-  const developerSlugs = new Set(
-    products
-      .map((p) => p.user?.creator_profile?.slug)
-      .filter((slug): slug is string => Boolean(slug)),
-  );
+  const developerMap = new Map<number, { user_id: number; slug: string }>();
+  products.forEach((p) => {
+    const profile = p.user?.creator_profile;
+    if (profile?.user_id && profile.slug) {
+      developerMap.set(profile.user_id, { user_id: profile.user_id, slug: profile.slug });
+    }
+  });
 
-  const developerRoutes: MetadataRoute.Sitemap = [...developerSlugs].map((slug) => ({
-    url: `${siteUrl}/developers/${slug}`,
+  const developerRoutes: MetadataRoute.Sitemap = [...developerMap.values()].map((profile) => ({
+    url: `${siteUrl}${developerPublicPath(profile)}`,
     lastModified: now,
     changeFrequency: "weekly",
     priority: 0.7,

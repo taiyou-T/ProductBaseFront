@@ -8,6 +8,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api, getApiErrorMessage } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
+import { safeNextPath } from "@/lib/auth-session";
 import { useSiteConfigStore } from "@/lib/site-config-store";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -32,9 +33,17 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const setAuth = useAuthStore((s) => s.setAuth);
+  const { token, hydrated } = useAuthStore();
   const { config, load } = useSiteConfigStore();
   const [error, setError] = useState<string | null>(null);
   const [termsAgreed, setTermsAgreed] = useState(false);
+  const nextPath = safeNextPath(searchParams.get("next"));
+
+  useEffect(() => {
+    if (hydrated && token) {
+      router.replace(nextPath);
+    }
+  }, [hydrated, token, router, nextPath]);
 
   useEffect(() => {
     const oauthError = searchParams.get("error");
@@ -65,7 +74,7 @@ function LoginForm() {
         }),
       });
       setAuth(res.token, res.user);
-      router.push("/dashboard");
+      router.push(nextPath);
     } catch (e) {
       setError(getApiErrorMessage(e, "ログインに失敗しました"));
     }
@@ -95,7 +104,11 @@ function LoginForm() {
           <span className="bg-zinc-50 px-2 text-zinc-500 dark:bg-zinc-950">または</span>
         </div>
       </div>
-      <GoogleLoginButton termsRequired={termsRequired} termsAgreed={termsAgreed} />
+      <GoogleLoginButton
+        termsRequired={termsRequired}
+        termsAgreed={termsAgreed}
+        redirectTo={nextPath}
+      />
       <p className="text-sm text-zinc-500">
         アカウントをお持ちでない方は{" "}
         <Link href="/register" className="text-indigo-600 hover:underline">登録</Link>

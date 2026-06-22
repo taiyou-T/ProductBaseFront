@@ -13,6 +13,7 @@ const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 type GoogleLoginButtonProps = {
   termsRequired?: boolean;
   termsAgreed?: boolean;
+  redirectTo?: string;
 };
 
 function GoogleRedirectLogin({ termsRequired, termsAgreed }: GoogleLoginButtonProps) {
@@ -49,7 +50,7 @@ function GoogleRedirectLogin({ termsRequired, termsAgreed }: GoogleLoginButtonPr
   );
 }
 
-function GoogleSdkLogin({ termsRequired, termsAgreed }: GoogleLoginButtonProps) {
+function GoogleSdkLogin({ termsRequired, termsAgreed, redirectTo = "/dashboard" }: GoogleLoginButtonProps) {
   const router = useRouter();
   const setAuth = useAuthStore((s) => s.setAuth);
   const [loading, setLoading] = useState(false);
@@ -70,7 +71,7 @@ function GoogleSdkLogin({ termsRequired, termsAgreed }: GoogleLoginButtonProps) 
           }),
         });
         setAuth(res.token, res.user);
-        router.push("/dashboard");
+        router.push(redirectTo);
       } catch (e) {
         setError(getApiErrorMessage(e, "Google ログインに失敗しました"));
       } finally {
@@ -96,14 +97,22 @@ function GoogleSdkLogin({ termsRequired, termsAgreed }: GoogleLoginButtonProps) 
   );
 }
 
-export function GoogleLoginButton({ termsRequired = false, termsAgreed = false }: GoogleLoginButtonProps) {
+export function GoogleLoginButton({
+  termsRequired = false,
+  termsAgreed = false,
+  redirectTo = "/dashboard",
+}: GoogleLoginButtonProps) {
   if (!clientId) {
     return <GoogleRedirectLogin termsRequired={termsRequired} termsAgreed={termsAgreed} />;
   }
 
   return (
     <GoogleOAuthProvider clientId={clientId}>
-      <GoogleSdkLogin termsRequired={termsRequired} termsAgreed={termsAgreed} />
+      <GoogleSdkLogin
+        termsRequired={termsRequired}
+        termsAgreed={termsAgreed}
+        redirectTo={redirectTo}
+      />
     </GoogleOAuthProvider>
   );
 }

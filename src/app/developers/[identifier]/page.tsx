@@ -1,16 +1,20 @@
 import Image from "next/image";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { serverApi } from "@/lib/api";
+import {
+  developerPublicApiPath,
+  developerPublicPath,
+  isCanonicalDeveloperPath,
+} from "@/lib/public-paths";
 import { publicPageMetadata } from "@/lib/seo";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { DeveloperActions } from "@/components/developers/DeveloperActions";
 import type { CreatorProfile, PaginatedResponse, Product } from "@/types";
 
-async function getDeveloper(slug: string) {
+async function getDeveloper(identifier: string) {
   try {
-    const res = await serverApi<{ data: CreatorProfile }>(`/public/developers/${slug}`);
+    const res = await serverApi<{ data: CreatorProfile }>(developerPublicApiPath(identifier));
     return res.data;
   } catch {
     return null;
@@ -20,24 +24,24 @@ async function getDeveloper(slug: string) {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ identifier: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const profile = await getDeveloper(slug);
+  const { identifier } = await params;
+  const profile = await getDeveloper(identifier);
   if (!profile) return { title: "開発者が見つかりません" };
 
   return publicPageMetadata({
     title: profile.display_name,
     description: profile.bio ?? `${profile.display_name} の公開成果物一覧`,
-    path: `/developers/${slug}`,
+    path: developerPublicPath(profile),
     image: profile.cover_url,
   });
 }
 
-async function getDeveloperProducts(slug: string) {
+async function getDeveloperProducts(identifier: string) {
   try {
     const res = await serverApi<PaginatedResponse<Product>>(
-      `/public/developers/${slug}/products`,
+      `${developerPublicApiPath(identifier)}/products`,
     );
     return res.data;
   } catch {
@@ -48,13 +52,17 @@ async function getDeveloperProducts(slug: string) {
 export default async function DeveloperPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ identifier: string }>;
 }) {
-  const { slug } = await params;
-  const profile = await getDeveloper(slug);
+  const { identifier } = await params;
+  const profile = await getDeveloper(identifier);
   if (!profile) notFound();
 
-  const products = await getDeveloperProducts(slug);
+  if (!isCanonicalDeveloperPath(identifier, profile)) {
+    redirect(developerPublicPath(profile));
+  }
+
+  const products = await getDeveloperProducts(identifier);
 
   return (
     <div className="space-y-8">

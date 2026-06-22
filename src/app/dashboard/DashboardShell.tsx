@@ -1,22 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuthRedirect } from "@/hooks/use-auth-redirect";
 import { useAuthStore } from "@/lib/auth-store";
 import { canAccessChat } from "@/lib/chat-access";
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-  const { user, token, hydrated } = useAuthStore();
+  const { isAuthenticated } = useAuthRedirect();
+  const user = useAuthStore((s) => s.user);
 
-  useEffect(() => {
-    if (hydrated && !token) {
-      router.replace("/login");
-    }
-  }, [hydrated, token, router]);
-
-  if (!hydrated || !token) {
+  if (!isAuthenticated) {
     return <p className="text-zinc-500">読み込み中...</p>;
   }
 

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuthStore } from "@/lib/auth-store";
 import { api, getApiErrorMessage } from "@/lib/api";
 import { formatListingSubmissionUsage } from "@/lib/creator-plan";
+import { productPublicPath } from "@/lib/public-paths";
 import { ButtonLink } from "@/components/ui/Button";
 import { APPROVAL_STATUS_LABELS } from "@/lib/constants";
 import { Badge } from "@/components/ui/Badge";
@@ -81,7 +82,7 @@ export default function DashboardProductsPage() {
                   </span>
                 )}
                 {p.is_published && (
-                  <Link href={`/products/${p.slug}`} className="ml-2 text-sm text-indigo-600">
+                  <Link href={productPublicPath(p)} className="ml-2 text-sm text-indigo-600">
                     公開ページ
                   </Link>
                 )}

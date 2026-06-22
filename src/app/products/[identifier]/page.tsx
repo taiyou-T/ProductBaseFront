@@ -1,8 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { serverApi } from "@/lib/api";
+import {
+  isCanonicalProductPath,
+  productPublicApiPath,
+  productPublicPath,
+} from "@/lib/public-paths";
 import { publicPageMetadata, buildProductDescription } from "@/lib/seo";
 import { DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
 import { Badge } from "@/components/ui/Badge";
@@ -12,9 +17,9 @@ import { ReportButton } from "@/components/products/ReportButton";
 import { DeveloperActions } from "@/components/developers/DeveloperActions";
 import type { Product } from "@/types";
 
-async function getProduct(slug: string) {
+async function getProduct(identifier: string) {
   try {
-    const res = await serverApi<{ data: Product }>(`/public/products/${slug}`);
+    const res = await serverApi<{ data: Product }>(productPublicApiPath(identifier));
     return res.data;
   } catch {
     return null;
@@ -24,16 +29,16 @@ async function getProduct(slug: string) {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ identifier: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const product = await getProduct(slug);
+  const { identifier } = await params;
+  const product = await getProduct(identifier);
   if (!product) return { title: "成果物が見つかりません" };
 
   return publicPageMetadata({
     title: product.title,
     description: buildProductDescription(product),
-    path: `/products/${product.slug}`,
+    path: productPublicPath(product),
     image: product.thumbnail_url,
   });
 }
@@ -41,11 +46,15 @@ export async function generateMetadata({
 export default async function ProductDetailPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ identifier: string }>;
 }) {
-  const { slug } = await params;
-  const product = await getProduct(slug);
+  const { identifier } = await params;
+  const product = await getProduct(identifier);
   if (!product) notFound();
+
+  if (!isCanonicalProductPath(identifier, product)) {
+    redirect(productPublicPath(product));
+  }
 
   const developer = product.user?.creator_profile;
   const jsonLd = {
@@ -97,6 +106,7 @@ export default async function ProductDetailPage({
           {developer && (
             <ProductDeveloperLine
               displayName={developer.display_name}
+              userId={developer.user_id ?? product.user?.id}
               slug={developer.slug}
             />
           )}

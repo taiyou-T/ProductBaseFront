@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuthStore } from "@/lib/auth-store";
 import { api } from "@/lib/api";
+import { developerPublicPath } from "@/lib/public-paths";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import type { CreatorProfile } from "@/types";
 
@@ -34,7 +35,7 @@ export default function CreatorFavoritesPage() {
             {profiles.map((p) => (
               <li key={p.id}>
                 <Link
-                  href={`/developers/${p.slug}`}
+                  href={developerPublicPath(p)}
                   className="block p-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
                 >
                   <p className="font-medium">{p.display_name}</p>
