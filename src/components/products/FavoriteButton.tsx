@@ -2,10 +2,16 @@
 
 import { useState } from "react";
 import { useAuthStore } from "@/lib/auth-store";
-import { api } from "@/lib/api";
+import { api, getApiErrorMessage } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 
-export function FavoriteButton({ productId }: { productId: number }) {
+export function FavoriteButton({
+  productId,
+  ownerUserId,
+}: {
+  productId: number;
+  ownerUserId?: number;
+}) {
   const { token, user } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -18,6 +24,10 @@ export function FavoriteButton({ productId }: { productId: number }) {
     );
   }
 
+  if (ownerUserId !== undefined && ownerUserId === user.id) {
+    return null;
+  }
+
   const addFavorite = async () => {
     setLoading(true);
     setMessage(null);
@@ -25,7 +35,7 @@ export function FavoriteButton({ productId }: { productId: number }) {
       await api(`/favorites/${productId}`, { method: "POST" }, token);
       setMessage("お気に入りに追加しました");
     } catch (e) {
-      setMessage(e instanceof Error ? e.message : "エラーが発生しました");
+      setMessage(getApiErrorMessage(e, "エラーが発生しました"));
     } finally {
       setLoading(false);
     }

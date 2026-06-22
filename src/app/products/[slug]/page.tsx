@@ -109,7 +109,7 @@ export default async function ProductDetailPage({
             <span>{product.view_count} PV</span>
             <span>♥ {product.favorite_count}</span>
           </div>
-          <FavoriteButton productId={product.id} />
+          <FavoriteButton productId={product.id} ownerUserId={product.user?.id} />
           {developer && product.user && (
             <DeveloperActions
               creatorUserId={product.user.id}
