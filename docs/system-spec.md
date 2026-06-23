@@ -2,7 +2,7 @@
 
 ProductBaseFront（公開サイト + 掲載者ダッシュボード）
 
-- **最終更新**: 2026-06-21
+- **最終更新**: 2026-06-23
 - **リポジトリ**: https://github.com/taiyou-T/ProductBaseFront
 - **本番 URL**: https://productbase-jp.com
 
@@ -48,28 +48,30 @@ ProductBaseFront（公開サイト + 掲載者ダッシュボード）
 
 ## 3. ルート一覧
 
-### 公開（ISR / SSR）
+### 公開（ISR / SSR・インデックス対象）
 
 | パス | 説明 |
 |------|------|
 | `/` | ホーム（新着・ランキング・お知らせ） |
-| `/products` | 成果物一覧（ソート） |
-| `/products/[slug]` | 成果物詳細（JSON-LD・OGP） |
-| `/developers/[slug]` | 開発者プロフィール |
+| `/products` | 成果物一覧（ソート・カテゴリ・タグ・開発ステータス） |
+| `/products/[identifier]` | 成果物詳細（JSON-LD・OGP・掲載日時表示） |
+| `/developers/[identifier]` | 開発者プロフィール |
 | `/organizations/[slug]` | 団体プロフィール |
 | `/categories/[slug]` | カテゴリ別一覧 |
 | `/tags/[slug]` | タグ別一覧 |
 | `/search` | 全文検索 |
+| `/terms` | 利用規約 |
+| `/contact` | お問い合わせフォーム |
 
-### 認証
+### 認証（noindex）
 
 | パス | 説明 |
 |------|------|
-| `/login` | メールログイン |
+| `/login` | メール・Google ログイン |
 | `/register` | 登録（掲載者選択可） |
 | `/auth/callback` | OAuth token 受け取り |
 
-### 閲覧者（要ログイン）
+### 閲覧者（要ログイン・noindex）
 
 | パス | 説明 |
 |------|------|
@@ -83,15 +85,15 @@ ProductBaseFront（公開サイト + 掲載者ダッシュボード）
 | `/billing/success` | 決済成功 |
 | `/billing/cancel` | 決済キャンセル |
 
-### 掲載者ダッシュボード（要ログイン）
+### 掲載者ダッシュボード（要ログイン・noindex）
 
 | パス | 説明 |
 |------|------|
 | `/dashboard` | 概要 |
-| `/dashboard/onboarding` | プロフィール初回作成 |
+| `/dashboard/onboarding` | プロフィール初回作成（slug 入力なし） |
 | `/dashboard/profile` | プロフィール編集 |
 | `/dashboard/products` | 成果物一覧 |
-| `/dashboard/products/new` | 成果物作成 |
+| `/dashboard/products/new` | 成果物作成（slug 入力なし） |
 | `/dashboard/products/[id]/edit` | 編集・掲載申請 |
 | `/dashboard/organizations` | 団体一覧 |
 | `/dashboard/organizations/new` | 団体作成 |
@@ -102,6 +104,7 @@ ProductBaseFront（公開サイト + 掲載者ダッシュボード）
 | パス | 説明 |
 |------|------|
 | `/sitemap.xml` | 動的 sitemap（`app/sitemap.ts`） |
+| `/robots.txt` | クロール制御（`app/robots.ts`） |
 
 ### API Route
 
@@ -111,7 +114,74 @@ ProductBaseFront（公開サイト + 掲載者ダッシュボード）
 
 ---
 
-## 4. 本番インフラ
+## 4. 公開 URL 設計
+
+`src/lib/public-paths.ts` で canonical パスを生成:
+
+| 種別 | 形式 | 例 |
+|------|------|-----|
+| 成果物 | `/products/{id}-{slug}` | `/products/6-miru` |
+| 開発者 | `/developers/{user_id}-{slug}` | `/developers/6-furukawa` |
+| 団体 | `/organizations/{slug}` | `/organizations/my-team` |
+
+API の `{identifier}` は数値 ID・`{id}-{slug}`・slug のいずれかで受付。非 canonical URL はリダイレクト。
+
+**slug ポリシー**: 成果物・プロフィール・団体の slug はサーバー自動生成。ダッシュボードフォームに slug 入力欄はない。
+
+---
+
+## 5. SEO 実装
+
+### `src/lib/seo.ts`
+
+| 関数 / 定数 | 用途 |
+|-------------|------|
+| `SITE_KEYWORDS` | 17 語の meta keywords（個人開発・Product Hunt 日本語版 等） |
+| `publicPageMetadata()` | 公開ページの title・description・keywords・canonical・OGP・Twitter |
+| `noIndexMetadata()` | 認証・ダッシュボード等の noindex |
+| `buildProductDescription()` | 成果物メタ description 生成 |
+
+### JSON-LD
+
+| ページ | schema.org | 状態 |
+|--------|------------|------|
+| `/products/[identifier]` | `SoftwareApplication` | ✅ |
+| `/developers/[identifier]` | `Person` | ⏳ 未実装 |
+| `/organizations/[slug]` | `Organization` | ⏳ 未実装 |
+
+### Sitemap（`app/sitemap.ts`）
+
+静的: `/`, `/products`, `/search`, `/terms`, `/contact`  
+動的: 成果物・開発者・カテゴリ・タグ（**団体は未含**）
+
+### キャッシュ
+
+`serverApi()` デフォルト `revalidate: 60` + バックエンド承認時の on-demand revalidate。
+
+---
+
+## 6. お問い合わせ（`/contact`）
+
+- ゲスト: カテゴリ・メール・本文（10–500 文字）→ `POST /public/inquiries`
+- ログイン中: メールはアカウントのものを使用（入力欄なし）
+- カテゴリ: `account` / `listing` / `feedback` / `other`
+- 送信成功時にモーダル表示（返信を約束しない文言）
+- フッターからリンク
+
+---
+
+## 7. 成果物詳細 UI
+
+PV・お気に入り数の下に掲載日時を表示:
+
+- **掲載開始**: `published_at`
+- **掲載更新**: `updated_at`
+
+カード一覧・ダッシュボードには未表示。
+
+---
+
+## 8. 本番インフラ
 
 | 項目 | 値 |
 |------|-----|
@@ -125,10 +195,10 @@ EC2 内から API へ SSR するため `/etc/hosts` に `127.0.0.1 api.productba
 
 ---
 
-## 5. 環境変数
+## 9. 環境変数
 
 開発: `.env.local`（`.env.example` 参照）  
-本番ビルド: `.env.production` のみ使用
+本番ビルド: `.env.production` のみ使用（**`.env.local` は本番に置かない**）
 
 バックエンド連携（ProductBaseBack `.env`）:
 
@@ -141,10 +211,11 @@ REVALIDATE_SECRET=<フロントと同一>
 
 ---
 
-## 6. 変更履歴
+## 10. 変更履歴
 
 | 日付 | 内容 |
 |------|------|
+| 2026-06-23 | SEO keywords・`/contact`・`[identifier]` URL・掲載日表示・slug フォーム削除 |
 | 2026-06-21 | 初版・本番デプロイ（productbase-jp.com） |
 | 2026-06-21 | MVP 公開ページ・認証・掲載者ダッシュボード基盤 |
-| 2026-06-21 | UI 機能一式（OAuth・Stripe・通知・チャット・団体・通報・sitemap・ダークモード） |
+| 2026-06-21 | OAuth・Stripe・通知・チャット・団体・通報・sitemap・ダークモード |

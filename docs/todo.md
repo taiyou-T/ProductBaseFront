@@ -2,7 +2,8 @@
 
 ProductBaseFront 開発タスク
 
-**最終更新**: 2026-06-21
+**最終更新**: 2026-06-21  
+**ステータス**: 計画済みタスク **すべて完了** ✅
 
 ---
 
@@ -20,21 +21,18 @@ ProductBaseFront 開発タスク
 
 ## 進捗サマリー（2026-06-21）
 
-### 完了
-
 | 領域 | 内容 |
 |------|------|
 | **基盤** | Next.js 16 + TypeScript + Tailwind + API クライアント |
 | **公開サイト** | ホーム・成果物・開発者・団体・カテゴリ・タグ・検索 |
-| **SEO** | metadata・JSON-LD・ISR（60s）・`app/sitemap.ts` |
+| **SEO** | metadata・JSON-LD・ISR・`sitemap.xml`・`robots.txt` |
 | **認証** | 登録・ログイン・Google OAuth（SDK + リダイレクト） |
 | **掲載者** | プロフィール・成果物 CRUD・画像 UP・掲載申請・団体管理 |
 | **閲覧者** | お気に入り・開発者お気に入り・通報 |
 | **サポーター** | 閲覧履歴・チャット |
 | **課金** | Stripe Checkout / Customer Portal UI |
-| **その他** | 通知一覧・ダークモード切替 |
-| **インフラ** | EC2 デプロイ・systemd・Nginx プロキシ |
-| **ISR** | `/api/revalidate` Route Handler |
+| **UI/UX** | モバイルナビ・管理画面サイドバー折りたたみ等 |
+| **インフラ** | EC2 デプロイ・systemd・Nginx プロキシ・CloudFront |
 
 ### 本番
 
@@ -58,6 +56,7 @@ ProductBaseFront 開発タスク
 - [x] チャット・閲覧履歴（サポーター）
 - [x] Stripe Checkout / Portal UI
 - [x] `app/sitemap.ts` 動的生成
+- [x] SEO 強化（`robots.txt`、公開ページ metadata、非公開 noindex）
 - [x] ダークモード切替
 - [x] revalidate Route Handler
 - [x] 本番 EC2 デプロイ
@@ -67,6 +66,11 @@ ProductBaseFront 開発タスク
 - [x] Playwright E2E（公開ページスモーク）
 - [x] GitHub Actions CI
 - [x] CloudFront 対応（`NEXT_PUBLIC_ASSET_PREFIX` + `docs/cloudfront.md`）
+- [x] CloudFront ディストリビューション本番構築
+- [x] 手書き型から OpenAPI 生成型への段階的移行
+- [x] E2E の認証フロー・ダッシュボード操作テスト
+- [x] モバイル向けボトムタブ・ドロワーメニュー
+- [x] フッター著作権表示
 
 ---
 
@@ -74,11 +78,7 @@ ProductBaseFront 開発タスク
 
 （現時点で計画済みタスクはすべて完了）
 
-### 将来の拡張候補
-
-- [ ] 手書き型（`src/types/index.ts`）から OpenAPI 生成型への段階的移行
-- [ ] E2E の認証フロー・ダッシュボード操作テスト
-- [ ] CloudFront ディストリビューション本番構築（AWS 側作業）
+新機能や改善が発生したら、このセクションに追記する。
 
 ---
 
