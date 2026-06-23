@@ -30,7 +30,12 @@ export const metadata: Metadata = {
   description: DEFAULT_SITE_DESCRIPTION,
   keywords: [...SITE_KEYWORDS],
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
   },
   openGraph: {
     type: "website",

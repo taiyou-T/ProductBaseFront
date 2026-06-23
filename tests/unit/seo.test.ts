@@ -44,7 +44,7 @@ describe("seo helpers", () => {
 
   it("resolves absolute OG image URLs", () => {
     process.env.NEXT_PUBLIC_SITE_URL = "https://productbase-jp.com";
-    expect(resolveOgImage()).toBe("https://productbase-jp.com/icon.svg");
+    expect(resolveOgImage()).toBe("https://productbase-jp.com/favicon.ico");
     expect(resolveOgImage("https://cdn.example.com/a.png")).toBe("https://cdn.example.com/a.png");
   });
 

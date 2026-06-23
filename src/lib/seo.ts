@@ -55,7 +55,7 @@ export function absoluteUrl(path: string): string {
 
 export function resolveOgImage(image?: string | null): string {
   if (!image) {
-    return absoluteUrl("/icon.svg");
+    return absoluteUrl("/favicon.ico");
   }
 
   if (image.startsWith("http://") || image.startsWith("https://")) {
