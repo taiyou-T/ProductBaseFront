@@ -15,7 +15,7 @@ export function ContactSuccessModal({ onClose }: { onClose: () => void }) {
           お問い合わせを受け付けました
         </h2>
         <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
-          内容を確認のうえ、ご連絡いたします。通常2〜3営業日以内に返信いたします。
+          お問い合わせを受け付けました。内容は順次確認いたします。返信が必要な場合のみ、メールでご連絡することがあります。
         </p>
         <div className="mt-6">
           <Button onClick={onClose} className="w-full">

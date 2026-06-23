@@ -14,7 +14,6 @@ import type { Organization } from "@/types";
 
 const schema = z.object({
   name: z.string().min(1, "団体名を入力してください"),
-  slug: z.string().optional(),
   description: z.string().optional(),
   website_url: z.string().url("有効な URL を入力").optional().or(z.literal("")),
   github_url: z.string().url("有効な URL を入力").optional().or(z.literal("")),
@@ -38,7 +37,6 @@ export default function EditOrganizationPage() {
       .then((res) => {
         reset({
           name: res.data.name,
-          slug: res.data.slug,
           description: res.data.description ?? "",
           website_url: res.data.website_url ?? "",
           github_url: res.data.github_url ?? "",
@@ -81,7 +79,6 @@ export default function EditOrganizationPage() {
       <h1 className="text-2xl font-bold">団体を編集</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Input label="団体名" error={errors.name?.message} {...register("name")} />
-        <Input label="スラッグ" error={errors.slug?.message} {...register("slug")} />
         <div>
           <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
             説明

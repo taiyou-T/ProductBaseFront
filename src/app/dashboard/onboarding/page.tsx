@@ -13,7 +13,6 @@ import type { CreatorProfile } from "@/types";
 
 const schema = z.object({
   display_name: z.string().min(1, "表示名を入力してください"),
-  slug: z.string().optional(),
   bio: z.string().optional(),
 });
 
@@ -50,7 +49,6 @@ export default function OnboardingPage() {
       </p>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Input label="表示名" {...register("display_name")} />
-        <Input label="スラッグ（任意）" placeholder="my-name" {...register("slug")} />
         <Textarea label="自己紹介" rows={4} {...register("bio")} />
         {error && <p className="text-sm text-red-600">{error}</p>}
         <Button type="submit" disabled={isSubmitting}>
