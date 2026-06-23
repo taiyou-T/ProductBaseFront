@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -25,6 +25,12 @@ export default function OnboardingPage() {
     resolver: zodResolver(schema),
     defaultValues: { display_name: user?.name ?? "" },
   });
+
+  useEffect(() => {
+    if (user?.is_creator) {
+      router.replace("/dashboard/products/new");
+    }
+  }, [user?.is_creator, router]);
 
   const onSubmit = async (data: z.infer<typeof schema>) => {
     if (!token) return;
