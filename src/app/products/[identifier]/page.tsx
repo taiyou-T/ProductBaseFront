@@ -10,6 +10,7 @@ import {
 } from "@/lib/public-paths";
 import { publicPageMetadata, buildProductDescription } from "@/lib/seo";
 import { DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
+import { formatJapanDate } from "@/lib/datetime";
 import { Badge } from "@/components/ui/Badge";
 import { FavoriteButton } from "@/components/products/FavoriteButton";
 import { ProductDeveloperLine } from "@/components/products/ProductDeveloperLine";
@@ -113,6 +114,10 @@ export default async function ProductDetailPage({
           <div className="flex flex-wrap gap-4 text-sm text-zinc-500">
             <span>{product.view_count} PV</span>
             <span>♥ {product.favorite_count}</span>
+            {product.published_at && (
+              <span>掲載開始: {formatJapanDate(product.published_at)}</span>
+            )}
+            <span>掲載更新: {formatJapanDate(product.updated_at)}</span>
           </div>
           <FavoriteButton productId={product.id} ownerUserId={product.user?.id} />
           {developer && product.user && (
