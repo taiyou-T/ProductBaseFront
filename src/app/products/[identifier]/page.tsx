@@ -111,13 +111,17 @@ export default async function ProductDetailPage({
               slug={developer.slug}
             />
           )}
-          <div className="flex flex-wrap gap-4 text-sm text-zinc-500">
-            <span>{product.view_count} PV</span>
-            <span>♥ {product.favorite_count}</span>
-            {product.published_at && (
-              <span>掲載開始: {formatJapanDate(product.published_at)}</span>
-            )}
-            <span>掲載更新: {formatJapanDate(product.updated_at)}</span>
+          <div className="space-y-1 text-sm text-zinc-500">
+            <div className="flex flex-wrap gap-4">
+              <span>{product.view_count} PV</span>
+              <span>♥ {product.favorite_count}</span>
+            </div>
+            <div className="flex flex-wrap gap-x-4 gap-y-1">
+              {product.published_at && (
+                <span>掲載開始: {formatJapanDate(product.published_at)}</span>
+              )}
+              <span>掲載更新: {formatJapanDate(product.updated_at)}</span>
+            </div>
           </div>
           <FavoriteButton productId={product.id} ownerUserId={product.user?.id} />
           {developer && product.user && (
