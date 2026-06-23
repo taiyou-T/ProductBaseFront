@@ -9,6 +9,7 @@ import { useAuthStore } from "@/lib/auth-store";
 import { INQUIRY_CATEGORIES } from "@/lib/inquiry";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { ContactSuccessModal } from "@/components/contact/ContactSuccessModal";
 
 const guestSchema = z.object({
   category: z.enum(["account", "listing", "feedback", "other"], {
@@ -81,11 +82,7 @@ function ContactForm({
 
   return (
     <>
-      {success && (
-        <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-200">
-          お問い合わせを受け付けました。内容を確認のうえ、ご連絡いたします。
-        </div>
-      )}
+      {success && <ContactSuccessModal onClose={() => setSuccess(false)} />}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-1">
