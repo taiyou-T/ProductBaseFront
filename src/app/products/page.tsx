@@ -12,7 +12,8 @@ import type { PaginatedResponse, Product } from "@/types";
 
 export const metadata: Metadata = publicPageMetadata({
   title: "成果物一覧",
-  description: "ProductBase に掲載されている個人開発・スタートアップの成果物一覧です。",
+  description:
+    "個人開発アプリ・無料アプリ・AIツール・Chrome拡張など、ProductBase に掲載されている成果物一覧です。",
   path: "/products",
 });
 

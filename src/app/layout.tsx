@@ -7,7 +7,7 @@ import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { SiteNavigation } from "@/components/layout/SiteNavigation";
 import { Footer } from "@/components/layout/Footer";
 import { SITE_NAME } from "@/lib/constants";
-import { DEFAULT_SITE_DESCRIPTION } from "@/lib/seo";
+import { DEFAULT_SITE_DESCRIPTION, SITE_KEYWORDS } from "@/lib/seo";
 import { getSiteUrl } from "@/lib/api";
 import "./globals.css";
 
@@ -28,6 +28,7 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description: DEFAULT_SITE_DESCRIPTION,
+  keywords: [...SITE_KEYWORDS],
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
   },

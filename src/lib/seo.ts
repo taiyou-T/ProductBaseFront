@@ -14,16 +14,43 @@ export function noIndexMetadata(title?: string): Metadata {
   };
 }
 
+/** サイト全体の meta keywords（公開ページ共通） */
+export const SITE_KEYWORDS = [
+  "個人開発 サービス 公開",
+  "個人開発 宣伝 方法",
+  "Product Hunt 日本語版",
+  "個人開発 ポートフォリオ 掲載",
+  "アプリ リリース 告知 サイト",
+  "スタートアップ 紹介 プラットフォーム",
+  "便利なWebサービス おすすめ",
+  "無料アプリ おすすめ 2025",
+  "無料アプリ おすすめ 2026",
+  "日本製アプリ 一覧",
+  "個人開発アプリ おすすめ",
+  "AIツール 個人開発 日本",
+  "Chrome拡張機能 おすすめ 日本人",
+  "個人開発者 スカウト",
+  "フリーランス エンジニア 探し方",
+  "スタートアップ 提携 探す",
+  "個人開発アプリ 買収",
+] as const;
+
+export function siteKeywords(...extra: string[]): string[] {
+  return [...SITE_KEYWORDS, ...extra];
+}
+
 export function publicPageMetadata({
   title,
   description,
   path,
   image,
+  keywords,
 }: {
   title: string;
   description: string;
   path: string;
   image?: string | null;
+  keywords?: string[];
 }): Metadata {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   const url = `${getSiteUrl()}${normalizedPath === "/" ? "" : normalizedPath}`;
@@ -31,6 +58,7 @@ export function publicPageMetadata({
   return {
     title,
     description,
+    keywords: siteKeywords(...(keywords ?? [])),
     alternates: { canonical: url },
     openGraph: {
       title,
@@ -51,7 +79,7 @@ export function publicPageMetadata({
 }
 
 export const DEFAULT_SITE_DESCRIPTION =
-  "個人開発者・スタートアップの成果物を掲載し、SEO で発信するプラットフォーム";
+  "個人開発アプリ・スタートアップの成果物を掲載・公開し、SEOで宣伝できるポートフォリオプラットフォーム。日本製アプリの紹介やアプリリリース告知に。";
 
 const META_DESCRIPTION_MAX = 160;
 

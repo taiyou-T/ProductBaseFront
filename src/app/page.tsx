@@ -10,7 +10,7 @@ import type { Announcement, PaginatedResponse, Product } from "@/types";
 export const metadata: Metadata = publicPageMetadata({
   title: "ProductBase",
   description:
-    "個人開発者・スタートアップの成果物を掲載し、SEO で発信するプラットフォーム。新着成果物や人気ランキングからプロダクトを探せます。",
+    "個人開発アプリやスタートアップの成果物を掲載・公開・宣伝できるポートフォリオ。新着成果物や人気ランキングから、便利なWebサービスや日本製アプリを探せます。",
   path: "/",
 });
 
