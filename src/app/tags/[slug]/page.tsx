@@ -1,7 +1,9 @@
 import { serverApi } from "@/lib/api";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import type { Metadata } from "next";
-import { publicPageMetadata } from "@/lib/seo";
+import { publicPageMetadata, buildMetaDescription } from "@/lib/seo";
+import { buildBreadcrumbJsonLd } from "@/lib/seo-jsonld";
+import { JsonLd } from "@/components/seo/JsonLd";
 import type { PaginatedResponse, Product, Tag } from "@/types";
 
 async function getTag(slug: string) {
@@ -23,9 +25,13 @@ export async function generateMetadata({
   if (!tag) return { title: "タグが見つかりません" };
 
   return publicPageMetadata({
-    title: `#${tag.name} の成果物`,
-    description: `タグ「${tag.name}」が付いた成果物一覧`,
+    title: `#${tag.name} の個人開発アプリ`,
+    description: buildMetaDescription(
+      `タグ「${tag.name}」が付いた個人開発アプリ・成果物の一覧。`,
+      "ProductBase で関連プロダクトを探せます。",
+    ),
     path: `/tags/${slug}`,
+    keywords: [tag.name, "個人開発アプリ", tag.slug],
   });
 }
 
@@ -56,7 +62,14 @@ export default async function TagPage({
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">タグ: #{tag.name}</h1>
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "ホーム", path: "/" },
+          { name: "成果物一覧", path: "/products" },
+          { name: `#${tag.name}`, path: `/tags/${slug}` },
+        ])}
+      />
+      <h1 className="text-2xl font-bold">#{tag.name} の個人開発アプリ</h1>
       <ProductGrid products={products} />
     </div>
   );

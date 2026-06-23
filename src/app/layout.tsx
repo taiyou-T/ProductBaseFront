@@ -7,7 +7,7 @@ import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { SiteNavigation } from "@/components/layout/SiteNavigation";
 import { Footer } from "@/components/layout/Footer";
 import { SITE_NAME } from "@/lib/constants";
-import { DEFAULT_SITE_DESCRIPTION, SITE_KEYWORDS } from "@/lib/seo";
+import { DEFAULT_SITE_DESCRIPTION, resolveOgImage, SITE_KEYWORDS } from "@/lib/seo";
 import { getSiteUrl } from "@/lib/api";
 import "./globals.css";
 
@@ -24,8 +24,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: SITE_NAME,
-    template: `%s | ${SITE_NAME}`,
+    default: "個人開発アプリの掲載・ポートフォリオ | ProductBase",
+    template: `%s | ProductBase`,
   },
   description: DEFAULT_SITE_DESCRIPTION,
   keywords: [...SITE_KEYWORDS],
@@ -36,8 +36,15 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ja_JP",
     siteName: SITE_NAME,
-    title: SITE_NAME,
+    title: "個人開発アプリの掲載・ポートフォリオ | ProductBase",
     description: DEFAULT_SITE_DESCRIPTION,
+    images: [{ url: resolveOgImage(), alt: SITE_NAME }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "個人開発アプリの掲載・ポートフォリオ | ProductBase",
+    description: DEFAULT_SITE_DESCRIPTION,
+    images: [resolveOgImage()],
   },
 };
 

@@ -1,7 +1,9 @@
 import { serverApi } from "@/lib/api";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import type { Metadata } from "next";
-import { publicPageMetadata } from "@/lib/seo";
+import { publicPageMetadata, buildMetaDescription } from "@/lib/seo";
+import { buildBreadcrumbJsonLd } from "@/lib/seo-jsonld";
+import { JsonLd } from "@/components/seo/JsonLd";
 import type { Category, PaginatedResponse, Product } from "@/types";
 
 async function getCategory(slug: string) {
@@ -23,9 +25,13 @@ export async function generateMetadata({
   if (!category) return { title: "カテゴリが見つかりません" };
 
   return publicPageMetadata({
-    title: `${category.name}の成果物`,
-    description: `カテゴリ「${category.name}」に分類された成果物一覧`,
+    title: `${category.name}の個人開発アプリ一覧`,
+    description: buildMetaDescription(
+      `カテゴリ「${category.name}」に掲載された個人開発アプリ・Webサービスの一覧。`,
+      "ProductBase で公開中の成果物を探せます。",
+    ),
     path: `/categories/${slug}`,
+    keywords: [category.name, "個人開発アプリ", category.slug],
   });
 }
 
@@ -56,7 +62,14 @@ export default async function CategoryPage({
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">カテゴリ: {category.name}</h1>
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "ホーム", path: "/" },
+          { name: "成果物一覧", path: "/products" },
+          { name: category.name, path: `/categories/${slug}` },
+        ])}
+      />
+      <h1 className="text-2xl font-bold">{category.name}の個人開発アプリ</h1>
       <ProductGrid products={products} />
     </div>
   );

@@ -8,9 +8,11 @@ import { DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
 import type { PaginatedResponse, Product } from "@/types";
 
 export const metadata: Metadata = publicPageMetadata({
-  title: "検索",
-  description: "ProductBase の成果物をキーワードやカテゴリで検索できます。",
+  title: "成果物を検索",
+  description:
+    "個人開発アプリや便利なWebサービスをキーワード・カテゴリ・開発ステータスで検索。ProductBase に掲載された日本製アプリを見つけられます。",
   path: "/search",
+  useSiteKeywords: true,
 });
 
 export default async function SearchPage({

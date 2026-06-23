@@ -8,7 +8,9 @@ import {
   productPublicApiPath,
   productPublicPath,
 } from "@/lib/public-paths";
-import { publicPageMetadata, buildProductDescription } from "@/lib/seo";
+import { publicPageMetadata, buildProductDescription, buildProductKeywords } from "@/lib/seo";
+import { buildBreadcrumbJsonLd, buildProductJsonLd } from "@/lib/seo-jsonld";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
 import { formatJapanDate } from "@/lib/datetime";
 import { Badge } from "@/components/ui/Badge";
@@ -41,6 +43,7 @@ export async function generateMetadata({
     description: buildProductDescription(product),
     path: productPublicPath(product),
     image: product.thumbnail_url,
+    keywords: buildProductKeywords(product),
   });
 }
 
@@ -58,22 +61,18 @@ export default async function ProductDetailPage({
   }
 
   const developer = product.user?.creator_profile;
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: product.title,
-    description: product.description ?? product.catch_copy,
-    url: product.service_url,
-    image: product.thumbnail_url,
-    applicationCategory: product.category?.name,
-  };
+  const breadcrumbs = buildBreadcrumbJsonLd([
+    { name: "ホーム", path: "/" },
+    { name: "成果物一覧", path: "/products" },
+    ...(product.category
+      ? [{ name: product.category.name, path: `/categories/${product.category.slug}` }]
+      : []),
+    { name: product.title, path: productPublicPath(product) },
+  ]);
 
   return (
     <article className="space-y-8">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={[buildProductJsonLd(product), breadcrumbs]} />
 
       <div className="grid gap-8 lg:grid-cols-2">
         <div className="relative aspect-video overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800">

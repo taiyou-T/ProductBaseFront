@@ -7,7 +7,9 @@ import {
   developerPublicPath,
   isCanonicalDeveloperPath,
 } from "@/lib/public-paths";
-import { publicPageMetadata } from "@/lib/seo";
+import { publicPageMetadata, buildMetaDescription } from "@/lib/seo";
+import { buildBreadcrumbJsonLd, buildPersonJsonLd } from "@/lib/seo-jsonld";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { DeveloperActions } from "@/components/developers/DeveloperActions";
 import type { CreatorProfile, PaginatedResponse, Product } from "@/types";
@@ -31,10 +33,14 @@ export async function generateMetadata({
   if (!profile) return { title: "開発者が見つかりません" };
 
   return publicPageMetadata({
-    title: profile.display_name,
-    description: profile.bio ?? `${profile.display_name} の公開成果物一覧`,
+    title: `${profile.display_name} - 開発者プロフィール`,
+    description: buildMetaDescription(
+      profile.bio,
+      `${profile.display_name} が ProductBase に掲載した個人開発アプリ・成果物の一覧`,
+    ),
     path: developerPublicPath(profile),
     image: profile.cover_url,
+    keywords: [profile.display_name, "個人開発者", "個人開発アプリ"],
   });
 }
 
@@ -66,6 +72,16 @@ export default async function DeveloperPage({
 
   return (
     <div className="space-y-8">
+      <JsonLd
+        data={[
+          buildPersonJsonLd(profile),
+          buildBreadcrumbJsonLd([
+            { name: "ホーム", path: "/" },
+            { name: "開発者", path: "/products" },
+            { name: profile.display_name, path: developerPublicPath(profile) },
+          ]),
+        ]}
+      />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
         {profile.cover_url && (
           <div className="relative h-32 w-full overflow-hidden rounded-xl sm:w-48">

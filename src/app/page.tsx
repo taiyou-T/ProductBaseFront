@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { serverApi } from "@/lib/api";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildWebSiteJsonLd } from "@/lib/seo-jsonld";
 import { publicPageMetadata } from "@/lib/seo";
 import { AnnouncementList } from "@/components/announcements/AnnouncementList";
 import { ProductGrid } from "@/components/products/ProductGrid";
@@ -8,10 +10,11 @@ import { HomeHeroActions } from "@/components/home/HomeHeroActions";
 import type { Announcement, PaginatedResponse, Product } from "@/types";
 
 export const metadata: Metadata = publicPageMetadata({
-  title: "ProductBase",
+  title: "個人開発アプリの掲載・ポートフォリオプラットフォーム",
   description:
-    "個人開発アプリやスタートアップの成果物を掲載・公開・宣伝できるポートフォリオ。新着成果物や人気ランキングから、便利なWebサービスや日本製アプリを探せます。",
+    "個人開発アプリやスタートアップの成果物を掲載・公開・宣伝できるプラットフォーム。新着成果物や人気ランキングから、便利なWebサービスや日本製アプリを探せます。",
   path: "/",
+  useSiteKeywords: true,
 });
 
 async function getHomeData() {
@@ -37,6 +40,7 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-12">
+      <JsonLd data={buildWebSiteJsonLd()} />
       <section className="rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-700 px-6 py-12 text-white shadow-lg">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
           作った成果物を、もっと広げる

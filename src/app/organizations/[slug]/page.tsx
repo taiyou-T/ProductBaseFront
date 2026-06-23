@@ -3,7 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { serverApi } from "@/lib/api";
-import { publicPageMetadata } from "@/lib/seo";
+import { publicPageMetadata, buildMetaDescription } from "@/lib/seo";
+import { buildBreadcrumbJsonLd, buildOrganizationJsonLd } from "@/lib/seo-jsonld";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import type { Organization, PaginatedResponse, Product } from "@/types";
 
@@ -26,10 +28,14 @@ export async function generateMetadata({
   if (!org) return { title: "団体が見つかりません" };
 
   return publicPageMetadata({
-    title: org.name,
-    description: org.description ?? `${org.name} の公開成果物一覧`,
+    title: `${org.name} - 団体プロフィール`,
+    description: buildMetaDescription(
+      org.description,
+      `${org.name} が ProductBase に掲載した成果物の一覧`,
+    ),
     path: `/organizations/${slug}`,
     image: org.logo_url,
+    keywords: [org.name, "スタートアップ", "個人開発"],
   });
 }
 
@@ -57,6 +63,16 @@ export default async function OrganizationPage({
 
   return (
     <div className="space-y-8">
+      <JsonLd
+        data={[
+          buildOrganizationJsonLd(org),
+          buildBreadcrumbJsonLd([
+            { name: "ホーム", path: "/" },
+            { name: "団体", path: "/products" },
+            { name: org.name, path: `/organizations/${slug}` },
+          ]),
+        ]}
+      />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
         {org.logo_url && (
           <div className="relative h-24 w-24 overflow-hidden rounded-xl">

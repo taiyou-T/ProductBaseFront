@@ -11,10 +11,11 @@ import { SORT_OPTIONS, DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
 import type { PaginatedResponse, Product } from "@/types";
 
 export const metadata: Metadata = publicPageMetadata({
-  title: "成果物一覧",
+  title: "個人開発アプリ・Webサービス一覧",
   description:
-    "個人開発アプリ・無料アプリ・AIツール・Chrome拡張など、ProductBase に掲載されている成果物一覧です。",
+    "個人開発アプリ・無料アプリ・AIツール・Chrome拡張など、ProductBase に掲載されている成果物をカテゴリや人気順で探せます。",
   path: "/products",
+  useSiteKeywords: true,
 });
 
 export default async function ProductsPage({

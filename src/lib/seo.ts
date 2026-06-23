@@ -7,6 +7,17 @@ export const NO_INDEX_ROBOTS: Metadata["robots"] = {
   follow: false,
 };
 
+export const PUBLIC_ROBOTS: Metadata["robots"] = {
+  index: true,
+  follow: true,
+  googleBot: {
+    index: true,
+    follow: true,
+    "max-image-preview": "large",
+    "max-snippet": -1,
+  },
+};
+
 export function noIndexMetadata(title?: string): Metadata {
   return {
     ...(title ? { title } : {}),
@@ -14,7 +25,7 @@ export function noIndexMetadata(title?: string): Metadata {
   };
 }
 
-/** サイト全体の meta keywords（公開ページ共通） */
+/** トップ・一覧ページ向けの広いキーワードセット */
 export const SITE_KEYWORDS = [
   "個人開発 サービス 公開",
   "個人開発 宣伝 方法",
@@ -23,63 +34,43 @@ export const SITE_KEYWORDS = [
   "アプリ リリース 告知 サイト",
   "スタートアップ 紹介 プラットフォーム",
   "便利なWebサービス おすすめ",
-  "無料アプリ おすすめ 2025",
-  "無料アプリ おすすめ 2026",
+  "無料アプリ おすすめ",
   "日本製アプリ 一覧",
   "個人開発アプリ おすすめ",
   "AIツール 個人開発 日本",
-  "Chrome拡張機能 おすすめ 日本人",
+  "Chrome拡張機能 おすすめ",
   "個人開発者 スカウト",
-  "フリーランス エンジニア 探し方",
-  "スタートアップ 提携 探す",
-  "個人開発アプリ 買収",
+  "個人開発アプリ",
 ] as const;
 
 export function siteKeywords(...extra: string[]): string[] {
-  return [...SITE_KEYWORDS, ...extra];
+  const merged = [...SITE_KEYWORDS, ...extra];
+  return [...new Set(merged.map((keyword) => keyword.trim()).filter(Boolean))];
 }
 
-export function publicPageMetadata({
-  title,
-  description,
-  path,
-  image,
-  keywords,
-}: {
-  title: string;
-  description: string;
-  path: string;
-  image?: string | null;
-  keywords?: string[];
-}): Metadata {
+export function absoluteUrl(path: string): string {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  const url = `${getSiteUrl()}${normalizedPath === "/" ? "" : normalizedPath}`;
+  return `${getSiteUrl()}${normalizedPath === "/" ? "" : normalizedPath}`;
+}
 
-  return {
-    title,
-    description,
-    keywords: siteKeywords(...(keywords ?? [])),
-    alternates: { canonical: url },
-    openGraph: {
-      title,
-      description,
-      url,
-      type: "website",
-      siteName: SITE_NAME,
-      locale: "ja_JP",
-      ...(image ? { images: [{ url: image }] } : {}),
-    },
-    twitter: {
-      card: image ? "summary_large_image" : "summary",
-      title,
-      description,
-      ...(image ? { images: [image] } : {}),
-    },
-  };
+export function resolveOgImage(image?: string | null): string {
+  if (!image) {
+    return absoluteUrl("/icon.svg");
+  }
+
+  if (image.startsWith("http://") || image.startsWith("https://")) {
+    return image;
+  }
+
+  if (image.startsWith("/")) {
+    return absoluteUrl(image);
+  }
+
+  return image;
 }
 
 export const DEFAULT_SITE_DESCRIPTION =
-  "個人開発アプリ・スタートアップの成果物を掲載・公開し、SEOで宣伝できるポートフォリオプラットフォーム。日本製アプリの紹介やアプリリリース告知に。";
+  "個人開発アプリ・スタートアップの成果物を掲載・公開し、SEOで宣伝できるポートフォリオプラットフォーム。日本製アプリの発見やアプリリリース告知に。";
 
 const META_DESCRIPTION_MAX = 160;
 
@@ -104,7 +95,81 @@ export function buildProductDescription(product: {
   title: string;
   catch_copy?: string | null;
   description?: string | null;
+  category?: { name: string } | null;
 }): string {
-  const summary = buildMetaDescription(product.catch_copy, product.description);
-  return summary === DEFAULT_SITE_DESCRIPTION ? product.title : summary;
+  const categoryHint = product.category ? `${product.category.name}の個人開発アプリ` : null;
+  const summary = buildMetaDescription(product.catch_copy, product.description, categoryHint);
+
+  if (summary === DEFAULT_SITE_DESCRIPTION) {
+    return buildMetaDescription(`${product.title} - ProductBaseで公開中の成果物`);
+  }
+
+  return summary;
+}
+
+export function buildProductKeywords(product: {
+  title: string;
+  category?: { name: string } | null;
+  tags?: { name: string }[];
+}): string[] {
+  return [
+    ...new Set(
+      [
+        product.title,
+        product.category?.name,
+        "個人開発アプリ",
+        ...(product.tags?.map((tag) => tag.name) ?? []),
+      ]
+        .map((keyword) => keyword?.trim())
+        .filter((keyword): keyword is string => Boolean(keyword)),
+    ),
+  ];
+}
+
+export function publicPageMetadata({
+  title,
+  description,
+  path,
+  image,
+  keywords,
+  useSiteKeywords = false,
+}: {
+  title: string;
+  description: string;
+  path: string;
+  image?: string | null;
+  keywords?: string[];
+  /** トップ・一覧ページのみ true（詳細ページは固有キーワードを優先） */
+  useSiteKeywords?: boolean;
+}): Metadata {
+  const url = absoluteUrl(path);
+  const ogImage = resolveOgImage(image);
+  const resolvedKeywords = useSiteKeywords
+    ? siteKeywords(...(keywords ?? []))
+    : keywords && keywords.length > 0
+      ? [...new Set(keywords.map((keyword) => keyword.trim()).filter(Boolean))]
+      : undefined;
+
+  return {
+    title,
+    description,
+    ...(resolvedKeywords ? { keywords: resolvedKeywords } : {}),
+    robots: PUBLIC_ROBOTS,
+    alternates: { canonical: url },
+    openGraph: {
+      title,
+      description,
+      url,
+      type: "website",
+      siteName: SITE_NAME,
+      locale: "ja_JP",
+      images: [{ url: ogImage, alt: title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
+  };
 }

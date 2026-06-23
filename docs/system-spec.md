@@ -136,18 +136,18 @@ API の `{identifier}` は数値 ID・`{id}-{slug}`・slug のいずれかで受
 
 | 関数 / 定数 | 用途 |
 |-------------|------|
-| `SITE_KEYWORDS` | 17 語の meta keywords（個人開発・Product Hunt 日本語版 等） |
-| `publicPageMetadata()` | 公開ページの title・description・keywords・canonical・OGP・Twitter |
-| `noIndexMetadata()` | 認証・ダッシュボード等の noindex |
-| `buildProductDescription()` | 成果物メタ description 生成 |
+| `SITE_KEYWORDS` | 14 語の meta keywords（トップ・一覧ページのみ） |
+| `publicPageMetadata()` | title・description・canonical・OGP・Twitter・robots |
+| `seo-jsonld.ts` | WebSite / SoftwareApplication / Person / Organization / BreadcrumbList |
+| `JsonLd` コンポーネント | 各公開ページに構造化データを出力 |
 
 ### JSON-LD
 
 | ページ | schema.org | 状態 |
 |--------|------------|------|
 | `/products/[identifier]` | `SoftwareApplication` | ✅ |
-| `/developers/[identifier]` | `Person` | ⏳ 未実装 |
-| `/organizations/[slug]` | `Organization` | ⏳ 未実装 |
+| `/developers/[identifier]` | `Person` | ✅ |
+| `/organizations/[slug]` | `Organization` | ✅ |
 
 ### Sitemap（`app/sitemap.ts`）
 
@@ -215,6 +215,7 @@ REVALIDATE_SECRET=<フロントと同一>
 
 | 日付 | 内容 |
 |------|------|
+| 2026-06-23 | SEO 最適化（構造化データ・OGP・タイトル/説明文・パンくず・ページ別 keywords） |
 | 2026-06-23 | SEO keywords・`/contact`・`[identifier]` URL・掲載日表示・slug フォーム削除 |
 | 2026-06-21 | 初版・本番デプロイ（productbase-jp.com） |
 | 2026-06-21 | MVP 公開ページ・認証・掲載者ダッシュボード基盤 |
