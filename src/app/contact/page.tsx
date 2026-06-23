@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/Button";
 
 const guestSchema = z.object({
   category: z.enum(["account", "listing", "feedback", "other"], {
-    required_error: "お問い合わせ種別を選択してください",
+    message: "お問い合わせ種別を選択してください",
   }),
   body: z
     .string()
