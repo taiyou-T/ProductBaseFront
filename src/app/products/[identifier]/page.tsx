@@ -15,6 +15,7 @@ import { DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
 import { formatJapanDate } from "@/lib/datetime";
 import { Badge } from "@/components/ui/Badge";
 import { FavoriteButton } from "@/components/products/FavoriteButton";
+import { ProductShareLinkButton } from "@/components/products/ProductShareLinkButton";
 import { ProductDeveloperLine } from "@/components/products/ProductDeveloperLine";
 import { ReportButton } from "@/components/products/ReportButton";
 import { DeveloperActions } from "@/components/developers/DeveloperActions";
@@ -123,6 +124,7 @@ export default async function ProductDetailPage({
             </div>
           </div>
           <FavoriteButton productId={product.id} ownerUserId={product.user?.id} />
+          <ProductShareLinkButton product={product} />
           {developer && product.user && (
             <DeveloperActions
               creatorUserId={product.user.id}
