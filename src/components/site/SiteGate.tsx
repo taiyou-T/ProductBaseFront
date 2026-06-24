@@ -3,13 +3,14 @@
 import { useEffect } from "react";
 import { useSiteConfigStore } from "@/lib/site-config-store";
 import { useAuthStore } from "@/lib/auth-store";
-import { api } from "@/lib/api";
+import { useLogout } from "@/hooks/use-logout";
 import { MaintenancePage } from "@/components/site/MaintenancePage";
 import { TermsAgreementModal } from "@/components/site/TermsAgreementModal";
 
 export function SiteGate({ children }: { children: React.ReactNode }) {
   const { config, loaded, load } = useSiteConfigStore();
-  const { token, user, hydrated, refreshUser, clearAuth } = useAuthStore();
+  const { token, user, hydrated, refreshUser } = useAuthStore();
+  const logout = useLogout();
 
   useEffect(() => {
     load();
@@ -29,21 +30,13 @@ export function SiteGate({ children }: { children: React.ReactNode }) {
     return <MaintenancePage message={config.maintenance_message} />;
   }
 
-  const handleLogout = async () => {
-    try {
-      if (token) await api("/auth/logout", { method: "POST" }, token);
-    } finally {
-      clearAuth();
-    }
-  };
-
   return (
     <>
       {children}
       {hydrated && user?.needs_terms_agreement && config?.terms_content && (
         <TermsAgreementModal
           termsContent={config.terms_content}
-          onLogout={handleLogout}
+          onLogout={logout}
         />
       )}
     </>

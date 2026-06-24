@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useAuthStore } from "@/lib/auth-store";
-import { api } from "@/lib/api";
+import { useLogout } from "@/hooks/use-logout";
 import { getDesktopNavLinks } from "@/lib/site-nav";
 import { Header } from "@/components/layout/Header";
 import { MobileMenu } from "@/components/layout/MobileMenu";
@@ -13,21 +13,16 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { ButtonLink } from "@/components/ui/Button";
 
 export function SiteNavigation() {
-  const { user, token, clearAuth, hydrated } = useAuthStore();
+  const { user, token, hydrated } = useAuthStore();
+  const logout = useLogout();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   const handleLogout = useCallback(async () => {
-    try {
-      if (token) {
-        await api("/auth/logout", { method: "POST" }, token);
-      }
-    } finally {
-      clearAuth();
-      setMenuOpen(false);
-    }
-  }, [token, clearAuth]);
+    setMenuOpen(false);
+    await logout();
+  }, [logout]);
 
   const desktopLinks = getDesktopNavLinks(hydrated && token ? user : null);
 
