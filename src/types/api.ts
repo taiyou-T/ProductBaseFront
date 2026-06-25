@@ -26,7 +26,7 @@ export type UserResource = Schemas["UserResource"];
 export type ApprovalStatus = Schemas["ApprovalStatus"];
 export type DevelopmentStatus = Schemas["DevelopmentStatus"];
 export type ChatStatus = Schemas["ChatStatus"];
-export type CreatorPlanType = Schemas["CreatorPlanType"];
+export type CreatorPlanType = "free" | "premium";
 
 /** Laravel ページネーション形式 */
 export interface PaginatedApiResponse<T> {
