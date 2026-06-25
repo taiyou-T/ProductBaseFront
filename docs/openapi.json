@@ -526,12 +526,16 @@
                                     "display_name": {
                                         "type": "string",
                                         "maxLength": 255
+                                    },
+                                    "terms_agreed": {
+                                        "type": "string"
                                     }
                                 },
                                 "required": [
                                     "name",
                                     "email",
-                                    "password"
+                                    "password",
+                                    "terms_agreed"
                                 ]
                             }
                         }
@@ -555,6 +559,28 @@
                                     "required": [
                                         "token",
                                         "user"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "maintenance_mode": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "maintenance_mode"
                                     ]
                                 }
                             }
@@ -585,6 +611,9 @@
                                     },
                                     "password": {
                                         "type": "string"
+                                    },
+                                    "terms_agreed": {
+                                        "type": "string"
                                     }
                                 },
                                 "required": [
@@ -613,6 +642,28 @@
                                     "required": [
                                         "token",
                                         "user"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "maintenance_mode": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "maintenance_mode"
                                     ]
                                 }
                             }
@@ -921,6 +972,25 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "\u30c1\u30e3\u30c3\u30c8\u3092\u5229\u7528\u3059\u308b\u306b\u306f\u3001\u30b5\u30dd\u30fc\u30bf\u30fc\u30d7\u30e9\u30f3\u3001\u307e\u305f\u306f\u63b2\u8f09\u30d7\u30e9\u30f3\uff0f\u7121\u6599\u30c8\u30e9\u30a4\u30a2\u30eb\u304c\u5fc5\u8981\u3067\u3059\u3002"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
                     }
@@ -1024,8 +1094,7 @@
                                     "type": "object",
                                     "properties": {
                                         "message": {
-                                            "type": "string",
-                                            "const": "\u6a29\u9650\u304c\u3042\u308a\u307e\u305b\u3093\u3002"
+                                            "type": "string"
                                         }
                                     },
                                     "required": [
@@ -1110,8 +1179,7 @@
                                     "type": "object",
                                     "properties": {
                                         "message": {
-                                            "type": "string",
-                                            "const": "\u6a29\u9650\u304c\u3042\u308a\u307e\u305b\u3093\u3002"
+                                            "type": "string"
                                         }
                                     },
                                     "required": [
@@ -1314,6 +1382,25 @@
                             }
                         }
                     },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "\u63b2\u8f09\u8005\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
                     }
@@ -1331,10 +1418,6 @@
                                 "type": "object",
                                 "properties": {
                                     "display_name": {
-                                        "type": "string",
-                                        "maxLength": 255
-                                    },
-                                    "slug": {
                                         "type": "string",
                                         "maxLength": 255
                                     },
@@ -1378,6 +1461,9 @@
                                             "null"
                                         ],
                                         "format": "uri"
+                                    },
+                                    "chat_status": {
+                                        "$ref": "#/components/schemas/ChatStatus"
                                     }
                                 }
                             }
@@ -1427,13 +1513,6 @@
                                         "type": "string",
                                         "maxLength": 255
                                     },
-                                    "slug": {
-                                        "type": [
-                                            "string",
-                                            "null"
-                                        ],
-                                        "maxLength": 255
-                                    },
                                     "bio": {
                                         "type": [
                                             "string",
@@ -1474,6 +1553,9 @@
                                             "null"
                                         ],
                                         "format": "uri"
+                                    },
+                                    "chat_status": {
+                                        "$ref": "#/components/schemas/ChatStatus"
                                     }
                                 },
                                 "required": [
@@ -1563,7 +1645,7 @@
                 }
             }
         },
-        "/public/developers/{slug}": {
+        "/public/developers/{identifier}": {
             "get": {
                 "operationId": "developer.show",
                 "tags": [
@@ -1571,7 +1653,7 @@
                 ],
                 "parameters": [
                     {
-                        "name": "slug",
+                        "name": "identifier",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -1620,7 +1702,7 @@
                 }
             }
         },
-        "/public/developers/{slug}/products": {
+        "/public/developers/{identifier}/products": {
             "get": {
                 "operationId": "developer.products",
                 "tags": [
@@ -1628,7 +1710,7 @@
                 ],
                 "parameters": [
                     {
-                        "name": "slug",
+                        "name": "identifier",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -1893,6 +1975,44 @@
                             }
                         }
                     },
+                    "500": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "\u78ba\u8a8d\u30e1\u30fc\u30eb\u306e\u9001\u4fe1\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "\u78ba\u8a8d\u30e1\u30fc\u30eb\u306e\u9001\u4fe1\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002\u3057\u3070\u3089\u304f\u3057\u3066\u304b\u3089\u518d\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
                     }
@@ -1904,6 +2024,16 @@
                 "operationId": "favorite.index",
                 "tags": [
                     "Favorite"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -2120,8 +2250,8 @@
                                                 "limit": {
                                                     "type": "integer",
                                                     "enum": [
-                                                        50,
-                                                        500
+                                                        10,
+                                                        100
                                                     ]
                                                 }
                                             },
@@ -2136,6 +2266,18 @@
                                                 "message": {
                                                     "type": "string",
                                                     "const": "\u516c\u958b\u4e2d\u306e\u6210\u679c\u7269\u306e\u307f\u304a\u6c17\u306b\u5165\u308a\u3067\u304d\u307e\u3059\u3002"
+                                                }
+                                            },
+                                            "required": [
+                                                "message"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "\u81ea\u5206\u306e\u6210\u679c\u7269\u306f\u304a\u6c17\u306b\u5165\u308a\u306b\u8ffd\u52a0\u3067\u304d\u307e\u305b\u3093\u3002"
                                                 }
                                             },
                                             "required": [
@@ -2224,6 +2366,44 @@
                                 }
                             }
                         }
+                    },
+                    "503": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "Google \u30ed\u30b0\u30a4\u30f3\u306f\u73fe\u5728\u5229\u7528\u3067\u304d\u307e\u305b\u3093\u3002\u7ba1\u7406\u8005\u306b GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET \u306e\u8a2d\u5b9a\u3092\u4f9d\u983c\u3057\u3066\u304f\u3060\u3055\u3044\u3002"
+                                                }
+                                            },
+                                            "required": [
+                                                "message"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string"
+                                                },
+                                                "maintenance_mode": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "message",
+                                                "maintenance_mode"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -2242,6 +2422,9 @@
                                 "type": "object",
                                 "properties": {
                                     "access_token": {
+                                        "type": "string"
+                                    },
+                                    "terms_agreed": {
                                         "type": "string"
                                     }
                                 },
@@ -2275,8 +2458,89 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "\u6700\u65b0\u306e\u5229\u7528\u898f\u7d04\u3078\u306e\u540c\u610f\u304c\u5fc5\u8981\u3067\u3059\u3002"
+                                                },
+                                                "needs_terms_agreement": {
+                                                    "type": "boolean"
+                                                },
+                                                "current_terms_version": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "message",
+                                                "needs_terms_agreement",
+                                                "current_terms_version"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "\u3053\u306e\u30a2\u30ab\u30a6\u30f3\u30c8\u306f\u5229\u7528\u505c\u6b62\u3055\u308c\u3066\u3044\u307e\u3059\u3002"
+                                                }
+                                            },
+                                            "required": [
+                                                "message"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "503": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "Google \u30ed\u30b0\u30a4\u30f3\u306f\u73fe\u5728\u5229\u7528\u3067\u304d\u307e\u305b\u3093\u3002\u7ba1\u7406\u8005\u306b GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET \u306e\u8a2d\u5b9a\u3092\u4f9d\u983c\u3057\u3066\u304f\u3060\u3055\u3044\u3002"
+                                                }
+                                            },
+                                            "required": [
+                                                "message"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string"
+                                                },
+                                                "maintenance_mode": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "message",
+                                                "maintenance_mode"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -2298,7 +2562,7 @@
                                         "type": "string",
                                         "format": "binary",
                                         "contentMediaType": "application/octet-stream",
-                                        "maxLength": 5120
+                                        "maxLength": 2048
                                     },
                                     "directory": {
                                         "type": [
@@ -2337,6 +2601,302 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/public/inquiries": {
+            "post": {
+                "operationId": "inquiry.store",
+                "tags": [
+                    "Inquiry"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "category": {
+                                        "$ref": "#/components/schemas/InquiryCategory"
+                                    },
+                                    "body": {
+                                        "type": "string",
+                                        "minLength": 10,
+                                        "maxLength": 500
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "maxLength": 255
+                                    }
+                                },
+                                "required": [
+                                    "category",
+                                    "body",
+                                    "email"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "inquiry": {
+                                            "$ref": "#/components/schemas/InquiryResource"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "\u304a\u554f\u3044\u5408\u308f\u305b\u3092\u53d7\u3051\u4ed8\u3051\u307e\u3057\u305f\u3002"
+                                        }
+                                    },
+                                    "required": [
+                                        "inquiry",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/admin/inquiries": {
+            "get": {
+                "operationId": "inquiryManagement.index",
+                "tags": [
+                    "InquiryManagement"
+                ],
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/InquiryStatus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `InquiryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/InquiryResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/admin/inquiries/{inquiry}": {
+            "put": {
+                "operationId": "inquiryManagement.updateStatus",
+                "tags": [
+                    "InquiryManagement"
+                ],
+                "parameters": [
+                    {
+                        "name": "inquiry",
+                        "in": "path",
+                        "required": true,
+                        "description": "The inquiry ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "status": {
+                                        "$ref": "#/components/schemas/InquiryStatus"
+                                    }
+                                },
+                                "required": [
+                                    "status"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`InquiryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/InquiryResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
@@ -2876,13 +3436,6 @@
                                         "type": "string",
                                         "maxLength": 255
                                     },
-                                    "slug": {
-                                        "type": [
-                                            "string",
-                                            "null"
-                                        ],
-                                        "maxLength": 255
-                                    },
                                     "description": {
                                         "type": [
                                             "string",
@@ -3049,10 +3602,6 @@
                                         "type": "string",
                                         "maxLength": 255
                                     },
-                                    "slug": {
-                                        "type": "string",
-                                        "maxLength": 255
-                                    },
                                     "description": {
                                         "type": [
                                             "string",
@@ -3149,6 +3698,266 @@
                 }
             }
         },
+        "/creator/organizations/{organization}/members": {
+            "get": {
+                "operationId": "organizationMember.index",
+                "tags": [
+                    "OrganizationMember"
+                ],
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "path",
+                        "required": true,
+                        "description": "The organization ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `OrganizationMemberResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/OrganizationMemberResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "\u6a29\u9650\u304c\u3042\u308a\u307e\u305b\u3093\u3002"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "organizationMember.store",
+                "tags": [
+                    "OrganizationMember"
+                ],
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "path",
+                        "required": true,
+                        "description": "The organization ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    }
+                                },
+                                "required": [
+                                    "email"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "member": {
+                                            "$ref": "#/components/schemas/OrganizationMemberResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "member"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "\u6a29\u9650\u304c\u3042\u308a\u307e\u305b\u3093\u3002"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/creator/organizations/{organization}/members/{user}": {
+            "delete": {
+                "operationId": "organizationMember.destroy",
+                "tags": [
+                    "OrganizationMember"
+                ],
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "path",
+                        "required": true,
+                        "description": "The organization ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "description": "The user ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "\u30e1\u30f3\u30d0\u30fc\u3092\u524a\u9664\u3057\u307e\u3057\u305f\u3002"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "\u30aa\u30fc\u30ca\u30fc\u306f\u524a\u9664\u3067\u304d\u307e\u305b\u3093\u3002"
+                                                }
+                                            },
+                                            "required": [
+                                                "message"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "\u81ea\u5206\u81ea\u8eab\u306f\u524a\u9664\u3067\u304d\u307e\u305b\u3093\u3002"
+                                                }
+                                            },
+                                            "required": [
+                                                "message"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "\u6a29\u9650\u304c\u3042\u308a\u307e\u305b\u3093\u3002"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/public/products": {
             "get": {
                 "operationId": "public.product.index",
@@ -3184,6 +3993,24 @@
                             "type": [
                                 "string",
                                 "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "development_status",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "enum": [
+                                "planning",
+                                "developing",
+                                "testing",
+                                "beta",
+                                "released",
+                                "ended"
                             ]
                         }
                     },
@@ -3361,7 +4188,7 @@
                 }
             }
         },
-        "/public/products/{slug}": {
+        "/public/products/{identifier}": {
             "get": {
                 "operationId": "public.product.show",
                 "tags": [
@@ -3369,7 +4196,7 @@
                 ],
                 "parameters": [
                     {
-                        "name": "slug",
+                        "name": "identifier",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -3746,15 +4573,31 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "const": "\u6210\u679c\u7269\u3092\u30a2\u30fc\u30ab\u30a4\u30d6\u3057\u307e\u3057\u305f\u3002"
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "\u6210\u679c\u7269\u3092\u30a2\u30fc\u30ab\u30a4\u30d6\u3057\u307e\u3057\u305f\u3002"
+                                                }
+                                            },
+                                            "required": [
+                                                "message"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "\u4e0b\u66f8\u304d\u3092\u524a\u9664\u3057\u307e\u3057\u305f\u3002"
+                                                }
+                                            },
+                                            "required": [
+                                                "message"
+                                            ]
                                         }
-                                    },
-                                    "required": [
-                                        "message"
                                     ]
                                 }
                             }
@@ -5013,6 +5856,27 @@
                                     "premium_price": {
                                         "type": "integer",
                                         "minimum": 0
+                                    },
+                                    "maintenance_mode": {
+                                        "type": "string",
+                                        "enum": [
+                                            "true",
+                                            "false"
+                                        ]
+                                    },
+                                    "maintenance_message": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 1000
+                                    },
+                                    "terms_content": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 50000
                                     }
                                 }
                             }
@@ -5048,6 +5912,50 @@
                 }
             }
         },
+        "/public/site-config": {
+            "get": {
+                "operationId": "siteConfig.show",
+                "tags": [
+                    "SiteConfig"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "maintenance_mode": {
+                                            "type": "boolean"
+                                        },
+                                        "maintenance_message": {
+                                            "type": "string"
+                                        },
+                                        "terms_version": {
+                                            "type": "integer"
+                                        },
+                                        "terms_content": {
+                                            "type": "string"
+                                        },
+                                        "terms_required": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "maintenance_mode",
+                                        "maintenance_message",
+                                        "terms_version",
+                                        "terms_content",
+                                        "terms_required"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/subscriptions": {
             "get": {
                 "operationId": "subscription.index",
@@ -5064,9 +5972,7 @@
                                     "properties": {
                                         "subscriptions": {
                                             "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/SubscriptionResource"
-                                            }
+                                            "items": {}
                                         }
                                     },
                                     "required": [
@@ -5099,7 +6005,6 @@
                                         "type": "string",
                                         "enum": [
                                             "supporter",
-                                            "standard",
                                             "premium"
                                         ]
                                     }
@@ -5281,6 +6186,62 @@
                 }
             }
         },
+        "/auth/terms/agree": {
+            "post": {
+                "operationId": "termsAgreement.agree",
+                "tags": [
+                    "TermsAgreement"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "\u5229\u7528\u898f\u7d04\u306b\u540c\u610f\u3057\u307e\u3057\u305f\u3002"
+                                                },
+                                                "user": {
+                                                    "$ref": "#/components/schemas/UserResource"
+                                                }
+                                            },
+                                            "required": [
+                                                "message",
+                                                "user"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "\u65e2\u306b\u6700\u65b0\u306e\u5229\u7528\u898f\u7d04\u306b\u540c\u610f\u6e08\u307f\u3067\u3059\u3002"
+                                                },
+                                                "user": {
+                                                    "$ref": "#/components/schemas/UserResource"
+                                                }
+                                            },
+                                            "required": [
+                                                "message",
+                                                "user"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/admin/users": {
             "get": {
                 "operationId": "userManagement.index",
@@ -5302,7 +6263,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Paginated set of `UserResource`",
+                        "description": "Paginated set of `AdminUserResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -5311,7 +6272,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/UserResource"
+                                                "$ref": "#/components/schemas/AdminUserResource"
                                             }
                                         },
                                         "links": {
@@ -5468,14 +6429,14 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`UserResource`",
+                        "description": "`AdminUserResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/UserResource"
+                                            "$ref": "#/components/schemas/AdminUserResource"
                                         }
                                     },
                                     "required": [
@@ -5512,7 +6473,7 @@
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "403": {
                         "description": "",
                         "content": {
                             "application/json": {
@@ -5521,7 +6482,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "const": "\u7ba1\u7406\u8005\u6a29\u9650\u3092\u4ed8\u4e0e\u3057\u307e\u3057\u305f\u3002"
+                                            "const": "\u7ba1\u7406\u8005\u6a29\u9650\u306e\u4ed8\u4e0e\u306f\u3053\u306e\u753b\u9762\u304b\u3089\u306f\u884c\u3048\u307e\u305b\u3093\u3002"
                                         }
                                     },
                                     "required": [
@@ -5586,6 +6547,164 @@
                 }
             }
         },
+        "/admin/users/{user}/ban": {
+            "post": {
+                "operationId": "userManagement.ban",
+                "tags": [
+                    "UserManagement"
+                ],
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "description": "The user ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "\u30e6\u30fc\u30b6\u30fc\u3092BAN\u3057\u307e\u3057\u305f\u3002"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "\u65e2\u306bBAN\u3055\u308c\u3066\u3044\u307e\u3059\u3002"
+                                                }
+                                            },
+                                            "required": [
+                                                "message"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "\u7ba1\u7406\u8005\u306fBAN\u3067\u304d\u307e\u305b\u3093\u3002"
+                                                }
+                                            },
+                                            "required": [
+                                                "message"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "\u81ea\u5206\u81ea\u8eab\u3092BAN\u3067\u304d\u307e\u305b\u3093\u3002"
+                                                }
+                                            },
+                                            "required": [
+                                                "message"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/admin/users/{user}/unban": {
+            "post": {
+                "operationId": "userManagement.unban",
+                "tags": [
+                    "UserManagement"
+                ],
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "description": "The user ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "BAN\u3092\u89e3\u9664\u3057\u307e\u3057\u305f\u3002"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "BAN\u3055\u308c\u3066\u3044\u307e\u305b\u3093\u3002"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/view-history": {
             "get": {
                 "operationId": "viewHistory.index",
@@ -5629,6 +6748,69 @@
             }
         },
         "schemas": {
+            "AdminUserResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "avatar_url": {
+                        "type": "string"
+                    },
+                    "is_admin": {
+                        "type": "string"
+                    },
+                    "is_creator": {
+                        "type": "string"
+                    },
+                    "is_supporter": {
+                        "type": "string"
+                    },
+                    "is_banned": {
+                        "type": "string"
+                    },
+                    "banned_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "creator_profile": {
+                        "$ref": "#/components/schemas/CreatorProfileResource"
+                    },
+                    "subscriptions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SubscriptionResource"
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "email",
+                    "avatar_url",
+                    "is_admin",
+                    "is_creator",
+                    "is_supporter",
+                    "is_banned",
+                    "banned_at",
+                    "created_at"
+                ],
+                "title": "AdminUserResource"
+            },
             "AnnouncementResource": {
                 "type": "object",
                 "properties": {
@@ -5645,22 +6827,19 @@
                         "type": [
                             "string",
                             "null"
-                        ],
-                        "format": "date-time"
+                        ]
                     },
                     "created_at": {
                         "type": [
                             "string",
                             "null"
-                        ],
-                        "format": "date-time"
+                        ]
                     },
                     "updated_at": {
                         "type": [
                             "string",
                             "null"
-                        ],
-                        "format": "date-time"
+                        ]
                     }
                 },
                 "required": [
@@ -5717,6 +6896,30 @@
                 ],
                 "title": "ChatStatus"
             },
+            "ConversationParticipantResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "display_name": {
+                        "type": "string"
+                    },
+                    "avatar_url": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "display_name",
+                    "avatar_url"
+                ],
+                "title": "ConversationParticipantResource"
+            },
             "ConversationResource": {
                 "type": "object",
                 "properties": {
@@ -5729,9 +6932,17 @@
                     "viewer_user_id": {
                         "type": "integer"
                     },
+                    "creator": {
+                        "$ref": "#/components/schemas/ConversationParticipantResource"
+                    },
+                    "viewer": {
+                        "$ref": "#/components/schemas/ConversationParticipantResource"
+                    },
                     "created_at": {
-                        "type": "string",
-                        "format": "date-time"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "messages": {
                         "type": "array",
@@ -5748,19 +6959,13 @@
                 ],
                 "title": "ConversationResource"
             },
-            "CreatorPlanType": {
-                "type": "string",
-                "enum": [
-                    "free_trial",
-                    "standard",
-                    "premium"
-                ],
-                "title": "CreatorPlanType"
-            },
             "CreatorProfileResource": {
                 "type": "object",
                 "properties": {
                     "id": {
+                        "type": "integer"
+                    },
+                    "user_id": {
                         "type": "integer"
                     },
                     "display_name": {
@@ -5809,18 +7014,21 @@
                         "$ref": "#/components/schemas/ChatStatus"
                     },
                     "plan_type": {
-                        "$ref": "#/components/schemas/CreatorPlanType"
+                        "type": "string"
                     },
-                    "trial_ends_at": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
+                    "can_list": {
+                        "type": "boolean"
+                    },
+                    "listing_submission_limit": {
+                        "type": "string"
+                    },
+                    "listing_submission_count": {
+                        "type": "string"
                     }
                 },
                 "required": [
                     "id",
+                    "user_id",
                     "display_name",
                     "slug",
                     "bio",
@@ -5831,7 +7039,9 @@
                     "cover_url",
                     "chat_status",
                     "plan_type",
-                    "trial_ends_at"
+                    "can_list",
+                    "listing_submission_limit",
+                    "listing_submission_count"
                 ],
                 "title": "CreatorProfileResource"
             },
@@ -5846,6 +7056,71 @@
                     "ended"
                 ],
                 "title": "DevelopmentStatus"
+            },
+            "InquiryCategory": {
+                "type": "string",
+                "enum": [
+                    "account",
+                    "listing",
+                    "feedback",
+                    "other"
+                ],
+                "title": "InquiryCategory"
+            },
+            "InquiryResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserResource"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "category",
+                    "body",
+                    "email",
+                    "status",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "InquiryResource"
+            },
+            "InquiryStatus": {
+                "type": "string",
+                "enum": [
+                    "unconfirmed",
+                    "in_progress",
+                    "resolved",
+                    "on_hold"
+                ],
+                "title": "InquiryStatus"
             },
             "MessageResource": {
                 "type": "object",
@@ -5863,12 +7138,13 @@
                         "type": [
                             "string",
                             "null"
-                        ],
-                        "format": "date-time"
+                        ]
                     },
                     "created_at": {
-                        "type": "string",
-                        "format": "date-time"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     }
                 },
                 "required": [
@@ -5899,8 +7175,10 @@
                         "type": "boolean"
                     },
                     "created_at": {
-                        "type": "string",
-                        "format": "date-time"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     }
                 },
                 "required": [
@@ -6001,6 +7279,41 @@
                     "updated_at"
                 ],
                 "title": "Organization"
+            },
+            "OrganizationMemberResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "user_id",
+                    "role",
+                    "name",
+                    "email",
+                    "created_at"
+                ],
+                "title": "OrganizationMemberResource"
             },
             "OrganizationResource": {
                 "type": "object",
@@ -6157,8 +7470,7 @@
                         "type": [
                             "string",
                             "null"
-                        ],
-                        "format": "date-time"
+                        ]
                     },
                     "view_count": {
                         "type": "integer"
@@ -6197,15 +7509,13 @@
                         "type": [
                             "string",
                             "null"
-                        ],
-                        "format": "date-time"
+                        ]
                     },
                     "updated_at": {
                         "type": [
                             "string",
                             "null"
-                        ],
-                        "format": "date-time"
+                        ]
                     }
                 },
                 "required": [
@@ -6305,7 +7615,7 @@
                         "type": "integer"
                     },
                     "reason": {
-                        "$ref": "#/components/schemas/ReportReason"
+                        "type": "string"
                     },
                     "detail": {
                         "type": [
@@ -6314,7 +7624,7 @@
                         ]
                     },
                     "status": {
-                        "$ref": "#/components/schemas/ReportStatus"
+                        "type": "string"
                     },
                     "product": {
                         "$ref": "#/components/schemas/ProductResource"
@@ -6326,15 +7636,13 @@
                         "type": [
                             "string",
                             "null"
-                        ],
-                        "format": "date-time"
+                        ]
                     },
                     "updated_at": {
                         "type": [
                             "string",
                             "null"
-                        ],
-                        "format": "date-time"
+                        ]
                     }
                 },
                 "required": [
@@ -6346,15 +7654,6 @@
                     "updated_at"
                 ],
                 "title": "ReportResource"
-            },
-            "ReportStatus": {
-                "type": "string",
-                "enum": [
-                    "pending",
-                    "reviewing",
-                    "resolved"
-                ],
-                "title": "ReportStatus"
             },
             "SubscriptionPlanType": {
                 "type": "string",
@@ -6378,15 +7677,16 @@
                         "$ref": "#/components/schemas/SubscriptionStatus"
                     },
                     "started_at": {
-                        "type": "string",
-                        "format": "date-time"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "ended_at": {
                         "type": [
                             "string",
                             "null"
-                        ],
-                        "format": "date-time"
+                        ]
                     },
                     "is_active": {
                         "type": "boolean"
@@ -6448,11 +7748,13 @@
                         "type": [
                             "string",
                             "null"
-                        ],
-                        "format": "date-time"
+                        ]
                     },
                     "avatar_url": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "is_admin": {
                         "type": "boolean"
@@ -6462,6 +7764,18 @@
                     },
                     "is_supporter": {
                         "type": "boolean"
+                    },
+                    "terms_agreed_version": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "current_terms_version": {
+                        "type": "string"
+                    },
+                    "needs_terms_agreement": {
+                        "type": "string"
                     },
                     "creator_profile": {
                         "$ref": "#/components/schemas/CreatorProfileResource"
@@ -6475,7 +7789,10 @@
                     "avatar_url",
                     "is_admin",
                     "is_creator",
-                    "is_supporter"
+                    "is_supporter",
+                    "terms_agreed_version",
+                    "current_terms_version",
+                    "needs_terms_agreement"
                 ],
                 "title": "UserResource"
             }

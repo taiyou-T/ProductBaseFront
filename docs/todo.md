@@ -2,8 +2,8 @@
 
 ProductBaseFront 開発タスク
 
-**最終更新**: 2026-06-21  
-**ステータス**: 計画済みタスク **すべて完了** ✅
+**最終更新**: 2026-06-25  
+**ステータス**: 直近の計画タスク **すべて完了** ✅
 
 ---
 
@@ -16,23 +16,23 @@ ProductBaseFront 開発タスク
 | [system-spec.md](./system-spec.md) | アーキテクチャ・ルート・デプロイ変更 |
 | 本ファイル（todo.md） | タスク完了/追加時 |
 | ProductBaseBack `docs/frontend-handoff.md` | API 連携・環境変数変更 |
+| ProductBaseBack `docs/DEPLOY_PROD.md` | 本番デプロイ手順変更 |
 
 ---
 
-## 進捗サマリー（2026-06-21）
+## 進捗サマリー（2026-06-25）
 
 | 領域 | 内容 |
 |------|------|
 | **基盤** | Next.js 16 + TypeScript + Tailwind + API クライアント |
-| **公開サイト** | ホーム・成果物・開発者・団体・カテゴリ・タグ・検索 |
-| **SEO** | metadata・JSON-LD・ISR・`sitemap.xml`・`robots.txt` |
-| **認証** | 登録・ログイン・Google OAuth（SDK + リダイレクト） |
-| **掲載者** | プロフィール・成果物 CRUD・画像 UP・掲載申請・団体管理 |
-| **閲覧者** | お気に入り・開発者お気に入り・通報 |
+| **公開サイト** | ホーム・成果物・開発者・団体・カテゴリ・タグ・検索・お問い合わせ |
+| **SEO** | metadata・keywords・JSON-LD（成果物）・sitemap・robots |
+| **認証** | 登録・ログイン・Google OAuth |
+| **掲載者** | プロフィール・成果物 CRUD・団体管理（slug 手入力なし） |
+| **掲載者プラン** | 無料掲載（3件）+ Premium（5件）UI |
+| **閲覧者** | お気に入り・通報・お問い合わせ |
 | **サポーター** | 閲覧履歴・チャット |
-| **課金** | Stripe Checkout / Customer Portal UI |
-| **UI/UX** | モバイルナビ・管理画面サイドバー折りたたみ等 |
-| **インフラ** | EC2 デプロイ・systemd・Nginx プロキシ・CloudFront |
+| **課金** | Stripe Checkout / Customer Portal UI（サポーター + Premium） |
 
 ### 本番
 
@@ -46,37 +46,51 @@ ProductBaseFront 開発タスク
 
 ## 完了 ✅
 
+### 2026-06-25 リリース
+
+- [x] 掲載プラン UI 更新（無料掲載 + Premium のみ）
+- [x] トライアル・基本掲載（Standard）表示の削除
+- [x] 掲載枠 3/5 件の表示・上限メッセージ
+- [x] `docs/system-spec.md` 更新
+
+### 2026-06-23 リリース
+
+- [x] お問い合わせページ `/contact`（ゲスト/ログイン対応・成功モーダル）
+- [x] SEO keywords メタタグ（`SITE_KEYWORDS` 17 語）
+- [x] 公開 URL を `[identifier]` + canonical `{id}-{slug}` に統一
+- [x] 成果物詳細に掲載開始日・掲載更新日表示
+- [x] slug 入力欄削除（成果物・プロフィール・団体フォーム）
+- [x] `docs/system-spec.md` 全面更新
+
+### 基盤・公開サイト
+
 - [x] プロジェクト初期化
 - [x] 公開ページ（ISR）
 - [x] 認証（メール + Google OAuth）
-- [x] 掲載者ダッシュボード（MVP + 団体管理）
+- [x] 掲載者ダッシュボード（プロフィール・成果物・団体）
 - [x] お気に入り・開発者お気に入り
 - [x] 通報 UI
 - [x] 通知一覧
 - [x] チャット・閲覧履歴（サポーター）
 - [x] Stripe Checkout / Portal UI
-- [x] `app/sitemap.ts` 動的生成
-- [x] SEO 強化（`robots.txt`、公開ページ metadata、非公開 noindex）
+- [x] `app/sitemap.ts` 動的生成（`/contact`, `/terms` 含む）
+- [x] SEO（`robots.txt`、公開 metadata、非公開 noindex）
 - [x] ダークモード切替
 - [x] revalidate Route Handler
 - [x] 本番 EC2 デプロイ
-- [x] `docs/system-spec.md` 作成
-- [x] openapi-typescript 型生成（`npm run generate:api-types`）
-- [x] Vitest ユニットテスト
+- [x] Vitest ユニットテスト（`seo.test.ts` 含む）
 - [x] Playwright E2E（公開ページスモーク）
 - [x] GitHub Actions CI
-- [x] CloudFront 対応（`NEXT_PUBLIC_ASSET_PREFIX` + `docs/cloudfront.md`）
-- [x] CloudFront ディストリビューション本番構築
-- [x] 手書き型から OpenAPI 生成型への段階的移行
-- [x] E2E の認証フロー・ダッシュボード操作テスト
-- [x] モバイル向けボトムタブ・ドロワーメニュー
-- [x] フッター著作権表示
+- [x] CloudFront 対応（`docs/cloudfront.md`）
 
 ---
 
 ## 未着手・バックログ
 
-（現時点で計画済みタスクはすべて完了）
+- [ ] 開発者・団体ページの JSON-LD（`Person` / `Organization`）
+- [ ] sitemap に団体 URL を追加
+- [ ] お問い合わせページの E2E テスト
+- [ ] 手書き型から OpenAPI 生成型への完全移行
 
 新機能や改善が発生したら、このセクションに追記する。
 
@@ -84,8 +98,16 @@ ProductBaseFront 開発タスク
 
 ## デプロイ
 
+### EC2 上で直接
+
 ```bash
 cd ~/productbase-front && bash scripts/deploy.sh
 ```
 
-詳細: [README.md](../README.md)、ProductBaseBack `docs/DEPLOY_PROD.md`
+### ローカルから SSH
+
+```powershell
+ssh -i "$env:USERPROFILE\Downloads\torooma-prod-key.pem" ec2-user@13.231.248.47 "cd /home/ec2-user/productbase-front && bash scripts/deploy.sh"
+```
+
+詳細: [README.md](../README.md)、ProductBaseBack [DEPLOY_PROD.md](../../ProductBaseBack/docs/DEPLOY_PROD.md)

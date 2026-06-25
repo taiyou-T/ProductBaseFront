@@ -260,7 +260,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/public/developers/{slug}": {
+    "/public/developers/{identifier}": {
         parameters: {
             query?: never;
             header?: never;
@@ -276,7 +276,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/public/developers/{slug}/products": {
+    "/public/developers/{identifier}/products": {
         parameters: {
             query?: never;
             header?: never;
@@ -404,6 +404,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/public/inquiries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["inquiry.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/inquiries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["inquiryManagement.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/inquiries/{inquiry}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["inquiryManagement.updateStatus"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/notifications": {
         parameters: {
             query?: never;
@@ -516,6 +564,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/creator/organizations/{organization}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["organizationMember.index"];
+        put?: never;
+        post: operations["organizationMember.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/creator/organizations/{organization}/members/{user}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["organizationMember.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/public/products": {
         parameters: {
             query?: never;
@@ -532,7 +612,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/public/products/{slug}": {
+    "/public/products/{identifier}": {
         parameters: {
             query?: never;
             header?: never;
@@ -788,6 +868,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/public/site-config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["siteConfig.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/subscriptions": {
         parameters: {
             query?: never;
@@ -868,6 +964,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/terms/agree": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["termsAgreement.agree"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/users": {
         parameters: {
             query?: never;
@@ -932,6 +1044,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/users/{user}/ban": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["userManagement.ban"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users/{user}/unban": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["userManagement.unban"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/view-history": {
         parameters: {
             query?: never;
@@ -952,16 +1096,28 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AdminUserResource */
+        AdminUserResource: {
+            id: string;
+            name: string;
+            email: string;
+            avatar_url: string;
+            is_admin: string;
+            is_creator: string;
+            is_supporter: string;
+            is_banned: string;
+            banned_at: string | null;
+            created_at: string | null;
+            creator_profile?: components["schemas"]["CreatorProfileResource"];
+            subscriptions?: components["schemas"]["SubscriptionResource"][];
+        };
         /** AnnouncementResource */
         AnnouncementResource: {
             id: number;
             title: string;
             body: string;
-            /** Format: date-time */
             published_at: string | null;
-            /** Format: date-time */
             created_at: string | null;
-            /** Format: date-time */
             updated_at: string | null;
         };
         /**
@@ -981,23 +1137,27 @@ export interface components {
          * @enum {string}
          */
         ChatStatus: "open" | "supporter_only" | "closed";
+        /** ConversationParticipantResource */
+        ConversationParticipantResource: {
+            id: string;
+            name: string;
+            display_name: string;
+            avatar_url: string;
+        };
         /** ConversationResource */
         ConversationResource: {
             id: number;
             creator_user_id: number;
             viewer_user_id: number;
-            /** Format: date-time */
-            created_at: string;
+            creator?: components["schemas"]["ConversationParticipantResource"];
+            viewer?: components["schemas"]["ConversationParticipantResource"];
+            created_at: string | null;
             messages?: components["schemas"]["MessageResource"][];
         };
-        /**
-         * CreatorPlanType
-         * @enum {string}
-         */
-        CreatorPlanType: "free" | "premium";
         /** CreatorProfileResource */
         CreatorProfileResource: {
             id: number;
+            user_id: number;
             display_name: string;
             slug: string;
             bio: string | null;
@@ -1007,25 +1167,44 @@ export interface components {
             x_url: string | null;
             cover_url: string | null;
             chat_status: components["schemas"]["ChatStatus"];
-            plan_type: components["schemas"]["CreatorPlanType"];
-            can_list?: boolean;
-            listing_submission_limit?: number;
-            listing_submission_count?: number;
+            plan_type: string;
+            can_list: boolean;
+            listing_submission_limit: string;
+            listing_submission_count: string;
         };
         /**
          * DevelopmentStatus
          * @enum {string}
          */
         DevelopmentStatus: "planning" | "developing" | "testing" | "beta" | "released" | "ended";
+        /**
+         * InquiryCategory
+         * @enum {string}
+         */
+        InquiryCategory: "account" | "listing" | "feedback" | "other";
+        /** InquiryResource */
+        InquiryResource: {
+            id: string;
+            category: string;
+            body: string;
+            email: string;
+            status: string;
+            user?: components["schemas"]["UserResource"];
+            created_at: string | null;
+            updated_at: string | null;
+        };
+        /**
+         * InquiryStatus
+         * @enum {string}
+         */
+        InquiryStatus: "unconfirmed" | "in_progress" | "resolved" | "on_hold";
         /** MessageResource */
         MessageResource: {
             id: number;
             sender_user_id: number;
             message: string;
-            /** Format: date-time */
             read_at: string | null;
-            /** Format: date-time */
-            created_at: string;
+            created_at: string | null;
         };
         /** NotificationResource */
         NotificationResource: {
@@ -1034,8 +1213,7 @@ export interface components {
             title: string;
             body: string;
             is_read: boolean;
-            /** Format: date-time */
-            created_at: string;
+            created_at: string | null;
         };
         /**
          * NotificationType
@@ -1057,6 +1235,15 @@ export interface components {
             created_at: string | null;
             /** Format: date-time */
             updated_at: string | null;
+        };
+        /** OrganizationMemberResource */
+        OrganizationMemberResource: {
+            id: string;
+            user_id: string;
+            role: string;
+            name: string;
+            email: string;
+            created_at: string | null;
         };
         /** OrganizationResource */
         OrganizationResource: {
@@ -1092,7 +1279,6 @@ export interface components {
             approval_status?: components["schemas"]["ApprovalStatus"];
             rejection_reason?: string | null;
             is_public: boolean;
-            /** Format: date-time */
             published_at: string | null;
             view_count: number;
             favorite_count: number;
@@ -1103,9 +1289,7 @@ export interface components {
             images?: components["schemas"]["ProductImageResource"][];
             user?: components["schemas"]["UserResource"];
             organization?: components["schemas"]["Organization"];
-            /** Format: date-time */
             created_at: string | null;
-            /** Format: date-time */
             updated_at: string | null;
         };
         /** ProductStoryResource */
@@ -1126,21 +1310,14 @@ export interface components {
         /** ReportResource */
         ReportResource: {
             id: number;
-            reason: components["schemas"]["ReportReason"];
+            reason: string;
             detail: string | null;
-            status: components["schemas"]["ReportStatus"];
+            status: string;
             product?: components["schemas"]["ProductResource"];
             reporter?: components["schemas"]["UserResource"];
-            /** Format: date-time */
             created_at: string | null;
-            /** Format: date-time */
             updated_at: string | null;
         };
-        /**
-         * ReportStatus
-         * @enum {string}
-         */
-        ReportStatus: "pending" | "reviewing" | "resolved";
         /**
          * SubscriptionPlanType
          * @enum {string}
@@ -1151,9 +1328,7 @@ export interface components {
             id: number;
             plan_type: components["schemas"]["SubscriptionPlanType"];
             status: components["schemas"]["SubscriptionStatus"];
-            /** Format: date-time */
-            started_at: string;
-            /** Format: date-time */
+            started_at: string | null;
             ended_at: string | null;
             is_active: boolean;
         };
@@ -1173,12 +1348,14 @@ export interface components {
             id: number;
             name: string;
             email: string;
-            /** Format: date-time */
             email_verified_at: string | null;
-            avatar_url: string;
+            avatar_url: string | null;
             is_admin: boolean;
             is_creator: boolean;
             is_supporter: boolean;
+            terms_agreed_version: number | null;
+            current_terms_version: string;
+            needs_terms_agreement: string;
             creator_profile?: components["schemas"]["CreatorProfileResource"];
         };
     };
@@ -1450,6 +1627,7 @@ export interface operations {
                     password: string;
                     as_creator?: boolean;
                     display_name?: string;
+                    terms_agreed: string;
                 };
             };
         };
@@ -1466,6 +1644,17 @@ export interface operations {
                 };
             };
             422: components["responses"]["ValidationException"];
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        maintenance_mode: boolean;
+                    };
+                };
+            };
         };
     };
     "auth.login": {
@@ -1481,6 +1670,7 @@ export interface operations {
                     /** Format: email */
                     email: string;
                     password: string;
+                    terms_agreed?: string;
                 };
             };
         };
@@ -1497,6 +1687,17 @@ export interface operations {
                 };
             };
             422: components["responses"]["ValidationException"];
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        maintenance_mode: boolean;
+                    };
+                };
+            };
         };
     };
     "auth.logout": {
@@ -1648,6 +1849,17 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "チャットを利用するには、サポータープラン、または掲載プラン／無料トライアルが必要です。";
+                    };
+                };
+            };
         };
     };
     "conversation.store": {
@@ -1710,8 +1922,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @constant */
-                        message: "権限がありません。";
+                        message: string;
                     };
                 };
             };
@@ -1754,8 +1965,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @constant */
-                        message: "権限がありません。";
+                        message: string;
                     };
                 };
             };
@@ -1875,6 +2085,17 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "掲載者プロフィールが見つかりません。";
+                    };
+                };
+            };
         };
     };
     "creatorProfile.update": {
@@ -1888,7 +2109,6 @@ export interface operations {
             content: {
                 "application/json": {
                     display_name?: string;
-                    slug?: string;
                     bio?: string | null;
                     location?: string | null;
                     /** Format: uri */
@@ -1899,6 +2119,7 @@ export interface operations {
                     x_url?: string | null;
                     /** Format: uri */
                     cover_url?: string | null;
+                    chat_status?: components["schemas"]["ChatStatus"];
                 };
             };
         };
@@ -1929,7 +2150,6 @@ export interface operations {
             content: {
                 "application/json": {
                     display_name: string;
-                    slug?: string | null;
                     bio?: string | null;
                     location?: string | null;
                     /** Format: uri */
@@ -1940,6 +2160,7 @@ export interface operations {
                     x_url?: string | null;
                     /** Format: uri */
                     cover_url?: string | null;
+                    chat_status?: components["schemas"]["ChatStatus"];
                 };
             };
         };
@@ -1989,7 +2210,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                slug: string;
+                identifier: string;
             };
             cookie?: never;
         };
@@ -2024,7 +2245,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                slug: string;
+                identifier: string;
             };
             cookie?: never;
         };
@@ -2130,11 +2351,35 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "確認メールの送信に失敗しました。";
+                    };
+                };
+            };
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "確認メールの送信に失敗しました。しばらくしてから再度お試しください。";
+                    };
+                };
+            };
         };
     };
     "favorite.index": {
         parameters: {
-            query?: never;
+            query?: {
+                per_page?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -2217,10 +2462,13 @@ export interface operations {
                         /** @constant */
                         message: "お気に入り上限に達しています。サポータープランで上限が拡張されます。";
                         /** @enum {integer} */
-                        limit: 50 | 500;
+                        limit: 10 | 100;
                     } | {
                         /** @constant */
                         message: "公開中の成果物のみお気に入りできます。";
+                    } | {
+                        /** @constant */
+                        message: "自分の成果物はお気に入りに追加できません。";
                     };
                 };
             };
@@ -2272,6 +2520,20 @@ export interface operations {
                     };
                 };
             };
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Google ログインは現在利用できません。管理者に GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET の設定を依頼してください。";
+                    } | {
+                        message: string;
+                        maintenance_mode: boolean;
+                    };
+                };
+            };
         };
     };
     "googleAuth.token": {
@@ -2285,6 +2547,7 @@ export interface operations {
             content: {
                 "application/json": {
                     access_token: string;
+                    terms_agreed?: string;
                 };
             };
         };
@@ -2300,7 +2563,37 @@ export interface operations {
                     };
                 };
             };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "最新の利用規約への同意が必要です。";
+                        needs_terms_agreement: boolean;
+                        current_terms_version: number;
+                    } | {
+                        /** @constant */
+                        message: "このアカウントは利用停止されています。";
+                    };
+                };
+            };
             422: components["responses"]["ValidationException"];
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Google ログインは現在利用できません。管理者に GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET の設定を依頼してください。";
+                    } | {
+                        message: string;
+                        maintenance_mode: boolean;
+                    };
+                };
+            };
         };
     };
     "imageUpload.store": {
@@ -2331,6 +2624,124 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "inquiry.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    category: components["schemas"]["InquiryCategory"];
+                    body: string;
+                    /** Format: email */
+                    email: string;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        inquiry: components["schemas"]["InquiryResource"];
+                        /** @constant */
+                        message: "お問い合わせを受け付けました。";
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "inquiryManagement.index": {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["InquiryStatus"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `InquiryResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["InquiryResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "inquiryManagement.updateStatus": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The inquiry ID */
+                inquiry: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    status: components["schemas"]["InquiryStatus"];
+                };
+            };
+        };
+        responses: {
+            /** @description `InquiryResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["InquiryResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
             422: components["responses"]["ValidationException"];
         };
     };
@@ -2572,7 +2983,6 @@ export interface operations {
             content: {
                 "application/json": {
                     name: string;
-                    slug?: string | null;
                     description?: string | null;
                     /** Format: uri */
                     website_url?: string | null;
@@ -2654,7 +3064,6 @@ export interface operations {
             content: {
                 "application/json": {
                     name?: string;
-                    slug?: string;
                     description?: string | null;
                     /** Format: uri */
                     website_url?: string | null;
@@ -2697,12 +3106,150 @@ export interface operations {
             422: components["responses"]["ValidationException"];
         };
     };
+    "organizationMember.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The organization ID */
+                organization: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `OrganizationMemberResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["OrganizationMemberResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "権限がありません。";
+                    };
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "organizationMember.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The organization ID */
+                organization: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: email */
+                    email: string;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        member: components["schemas"]["OrganizationMemberResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "権限がありません。";
+                    };
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "organizationMember.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The organization ID */
+                organization: number;
+                /** @description The user ID */
+                user: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "メンバーを削除しました。";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "権限がありません。";
+                    };
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "オーナーは削除できません。";
+                    } | {
+                        /** @constant */
+                        message: "自分自身は削除できません。";
+                    };
+                };
+            };
+        };
+    };
     "public.product.index": {
         parameters: {
             query?: {
                 q?: string | null;
                 category?: string | null;
                 tag?: string | null;
+                development_status?: "planning" | "developing" | "testing" | "beta" | "released" | "ended" | null;
                 sort?: "newest" | "popular" | "favorites" | null;
                 per_page?: number | null;
             };
@@ -2756,7 +3303,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                slug: string;
+                identifier: string;
             };
             cookie?: never;
         };
@@ -2952,6 +3499,9 @@ export interface operations {
                     "application/json": {
                         /** @constant */
                         message: "成果物をアーカイブしました。";
+                    } | {
+                        /** @constant */
+                        message: "下書きを削除しました。";
                     };
                 };
             };
@@ -3495,6 +4045,10 @@ export interface operations {
                     product_edit_review?: "true" | "false";
                     supporter_price?: number;
                     premium_price?: number;
+                    /** @enum {string} */
+                    maintenance_mode?: "true" | "false";
+                    maintenance_message?: string | null;
+                    terms_content?: string | null;
                 };
             };
         };
@@ -3514,6 +4068,31 @@ export interface operations {
             422: components["responses"]["ValidationException"];
         };
     };
+    "siteConfig.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        maintenance_mode: boolean;
+                        maintenance_message: string;
+                        terms_version: number;
+                        terms_content: string;
+                        terms_required: boolean;
+                    };
+                };
+            };
+        };
+    };
     "subscription.index": {
         parameters: {
             query?: never;
@@ -3529,7 +4108,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        subscriptions: components["schemas"]["SubscriptionResource"][];
+                        subscriptions: unknown[];
                     };
                 };
             };
@@ -3657,6 +4236,34 @@ export interface operations {
             };
         };
     };
+    "termsAgreement.agree": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "利用規約に同意しました。";
+                        user: components["schemas"]["UserResource"];
+                    } | {
+                        /** @constant */
+                        message: "既に最新の利用規約に同意済みです。";
+                        user: components["schemas"]["UserResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
     "userManagement.index": {
         parameters: {
             query?: {
@@ -3668,14 +4275,14 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Paginated set of `UserResource` */
+            /** @description Paginated set of `AdminUserResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
-                        data: components["schemas"]["UserResource"][];
+                        data: components["schemas"]["AdminUserResource"][];
                         links: {
                             first: string | null;
                             last: string | null;
@@ -3720,14 +4327,14 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description `UserResource` */
+            /** @description `AdminUserResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
-                        data: components["schemas"]["UserResource"];
+                        data: components["schemas"]["AdminUserResource"];
                     };
                 };
             };
@@ -3747,18 +4354,18 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            200: {
+            401: components["responses"]["AuthenticationException"];
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
                         /** @constant */
-                        message: "管理者権限を付与しました。";
+                        message: "管理者権限の付与はこの画面からは行えません。";
                     };
                 };
             };
-            401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
         };
     };
@@ -3787,6 +4394,88 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "userManagement.ban": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The user ID */
+                user: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "ユーザーをBANしました。";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "既にBANされています。";
+                    } | {
+                        /** @constant */
+                        message: "管理者はBANできません。";
+                    } | {
+                        /** @constant */
+                        message: "自分自身をBANできません。";
+                    };
+                };
+            };
+        };
+    };
+    "userManagement.unban": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The user ID */
+                user: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "BANを解除しました。";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "BANされていません。";
+                    };
+                };
+            };
         };
     };
     "viewHistory.index": {

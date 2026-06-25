@@ -2,7 +2,7 @@
 
 ProductBaseFront（公開サイト + 掲載者ダッシュボード）
 
-- **最終更新**: 2026-06-23
+- **最終更新**: 2026-06-25
 - **リポジトリ**: https://github.com/taiyou-T/ProductBaseFront
 - **本番 URL**: https://productbase-jp.com
 
@@ -211,10 +211,28 @@ REVALIDATE_SECRET=<フロントと同一>
 
 ---
 
-## 10. 変更履歴
+## 10. プラン・課金 UI（`/settings/billing`）
+
+| 区分 | 内容 |
+|------|------|
+| 閲覧者 無料 | 検索・閲覧・お気に入り10件 |
+| 掲載者 無料掲載 | 成果物掲載申請 **3件まで**（恒久・トライアルなし） |
+| サポーター | Stripe 月額（お気に入り100・閲覧履歴・チャット） |
+| Premium | Stripe 月額・掲載申請 **5件まで** |
+
+- Checkout: `POST /subscriptions/checkout` with `plan_type: 'supporter' | 'premium'`
+- 掲載者の `creator_profile.plan_type`: `'free' | 'premium'`（API から取得）
+- 廃止: 無料トライアル表示・基本掲載（Standard）プラン UI
+
+掲載枠はダッシュボード・成果物作成/編集画面に `listing_submission_count / listing_submission_limit` で表示。
+
+---
+
+## 11. 変更履歴
 
 | 日付 | 内容 |
 |------|------|
+| 2026-06-25 | 掲載プラン UI 更新（無料掲載 + Premium のみ・枠3/5・トライアル/Standard 削除） |
 | 2026-06-23 | SEO 最適化（構造化データ・OGP・タイトル/説明文・パンくず・ページ別 keywords） |
 | 2026-06-23 | SEO keywords・`/contact`・`[identifier]` URL・掲載日表示・slug フォーム削除 |
 | 2026-06-21 | 初版・本番デプロイ（productbase-jp.com） |
