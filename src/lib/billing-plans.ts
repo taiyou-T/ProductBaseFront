@@ -12,16 +12,15 @@ export const FREE_PLANS = [
     ],
   },
   {
-    id: "creator_trial",
+    id: "creator_free",
     audience: "掲載者向け",
-    name: "無料トライアル",
+    name: "無料掲載",
     price: "¥0",
-    summary: "掲載者プロフィール作成後、一定期間は掲載機能を無料でお試しできます（2026年9月1日以前の登録は同年10月末まで、以降は登録月から2か月間）。",
+    summary: "掲載者プロフィール作成後、成果物を無料で掲載できます。",
     features: [
       "成果物の登録・編集・掲載申請（最大3件）",
       "公開ページでの発信",
       "サポーターからのチャット閲覧・返信",
-      "トライアル終了後は基本掲載または Premium の契約が必要",
     ],
   },
 ] as const;
@@ -42,31 +41,21 @@ export const SUBSCRIPTION_PLANS = [
     requiresCreator: false,
   },
   {
-    type: "standard" as const,
-    audience: "掲載者向け",
-    name: "基本掲載",
-    description: "個人開発の成果物を継続的に掲載・発信するための標準プランです。",
-    price: "¥500/月",
-    features: [
-      "成果物の掲載・管理（掲載申請 最大3件）",
-      "掲載申請・公開ページの維持",
-      "サポーターからのチャット閲覧・返信",
-      "無料トライアル終了後の本掲載に利用",
-    ],
-    requiresCreator: true,
-  },
-  {
     type: "premium" as const,
     audience: "掲載者向け",
     name: "Premium 掲載",
-    description: "より本格的に掲載・ブランディングしたい掲載者向けの上位プランです。",
+    description: "より多くの成果物を掲載したい方向けのプランです。",
     price: "¥2,980/月",
     features: [
-      "基本掲載プランのすべての機能",
-      "掲載申請 最大10件",
+      "無料掲載のすべての機能",
+      "掲載申請 最大5件",
       "Premium 掲載者としての契約・表示",
-      "継続的な掲載・発信を重視する方向け",
     ],
     requiresCreator: true,
   },
 ] as const;
+
+/** 過去の Standard 契約など、表示用のレガシーラベル */
+export const LEGACY_SUBSCRIPTION_PLAN_LABELS: Record<string, string> = {
+  standard: "基本掲載（終了）",
+};

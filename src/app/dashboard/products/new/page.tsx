@@ -62,9 +62,8 @@ export default function NewProductPage() {
 
   const thumbnailUrl = watch("thumbnail_url");
   const profile = user?.creator_profile;
-  const canList = profile?.can_list ?? true;
   const canSubmit = canSubmitListing(profile, "draft");
-  const atSubmissionLimit = profile && !canSubmit && canList;
+  const atSubmissionLimit = profile && !canSubmit;
 
   const uploadImage = async (file: File) => {
     if (!token) return;
@@ -145,20 +144,6 @@ export default function NewProductPage() {
       <p className="text-sm text-zinc-600 dark:text-zinc-400">
         まず下書きとして保存できます。内容を確認したうえで「保存して掲載申請する」から公開申請を行ってください。
       </p>
-      {!canList && (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/30">
-          <p className="font-medium">無料トライアル期間が終了しています</p>
-          <p className="mt-1 text-amber-800 dark:text-amber-200">
-            掲載申請には基本掲載プラン（または Premium）の契約が必要です。
-          </p>
-          <Link
-            href="/settings/billing"
-            className="mt-2 inline-block text-indigo-600 hover:underline dark:text-indigo-400"
-          >
-            プラン・課金設定へ
-          </Link>
-        </div>
-      )}
       {atSubmissionLimit && (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/30">
           <p className="font-medium">掲載申請の上限に達しています</p>

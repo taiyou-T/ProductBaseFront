@@ -994,7 +994,7 @@ export interface components {
          * CreatorPlanType
          * @enum {string}
          */
-        CreatorPlanType: "free_trial" | "standard" | "premium";
+        CreatorPlanType: "free" | "premium";
         /** CreatorProfileResource */
         CreatorProfileResource: {
             id: number;
@@ -1008,8 +1008,9 @@ export interface components {
             cover_url: string | null;
             chat_status: components["schemas"]["ChatStatus"];
             plan_type: components["schemas"]["CreatorPlanType"];
-            /** Format: date-time */
-            trial_ends_at: string | null;
+            can_list?: boolean;
+            listing_submission_limit?: number;
+            listing_submission_count?: number;
         };
         /**
          * DevelopmentStatus
@@ -3546,7 +3547,7 @@ export interface operations {
             content: {
                 "application/json": {
                     /** @enum {string} */
-                    plan_type: "supporter" | "standard" | "premium";
+                    plan_type: "supporter" | "premium";
                 };
             };
         };

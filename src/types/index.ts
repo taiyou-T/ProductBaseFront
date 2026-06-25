@@ -63,8 +63,7 @@ export interface CreatorProfile {
   x_url: string | null;
   cover_url: string | null;
   chat_status: "open" | "supporter_only" | "closed";
-  plan_type: "free_trial" | "standard" | "premium";
-  trial_ends_at: string | null;
+  plan_type: "free" | "premium";
   can_list?: boolean;
   listing_submission_limit?: number;
   listing_submission_count?: number;

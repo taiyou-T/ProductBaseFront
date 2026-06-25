@@ -1,5 +1,5 @@
 import type { SubscriptionPlanType } from "@/types";
-import { SUBSCRIPTION_PLANS } from "@/lib/billing-plans";
+import { LEGACY_SUBSCRIPTION_PLAN_LABELS, SUBSCRIPTION_PLANS } from "@/lib/billing-plans";
 
 export const SITE_NAME = "ProductBase";
 
@@ -47,6 +47,10 @@ export const SUBSCRIPTION_STATUS_LABELS: Record<string, string> = {
   incomplete: "手続き未完了",
 };
 
-export function planLabel(planType: SubscriptionPlanType): string {
-  return SUBSCRIPTION_PLANS.find((p) => p.type === planType)?.name ?? planType;
+export function planLabel(planType: SubscriptionPlanType | string): string {
+  return (
+    SUBSCRIPTION_PLANS.find((p) => p.type === planType)?.name
+    ?? LEGACY_SUBSCRIPTION_PLAN_LABELS[planType]
+    ?? planType
+  );
 }

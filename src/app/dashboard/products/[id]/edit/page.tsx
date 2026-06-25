@@ -148,15 +148,12 @@ export default function EditProductPage({
   if (loading) return <p>読み込み中...</p>;
   if (!product) return <p>成果物が見つかりません。</p>;
 
-  const canList = user?.creator_profile?.can_list ?? true;
   const profile = user?.creator_profile;
-  const canSubmit =
-    canSubmitListing(profile, product.approval_status);
+  const canSubmit = canSubmitListing(profile, product.approval_status);
   const atSubmissionLimit =
     profile &&
     (product.approval_status === "draft" || product.approval_status === "archived") &&
-    !canSubmit &&
-    canList;
+    !canSubmit;
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -177,21 +174,6 @@ export default function EditProductPage({
           <p className="mt-1">
             内容を編集したうえで「掲載申請する」から、再度公開申請できます。申請枠に空きがある場合のみ申請可能です。
           </p>
-        </div>
-      )}
-      {!canList && (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/30">
-          <p className="font-medium">無料トライアル期間が終了しています</p>
-          <p className="mt-1 text-amber-800 dark:text-amber-200">
-            掲載申請・公開表示には基本掲載プラン（または Premium）の契約が必要です。
-            既に公開されていた成果物も一覧には表示されません。
-          </p>
-          <Link
-            href="/settings/billing"
-            className="mt-2 inline-block text-indigo-600 hover:underline dark:text-indigo-400"
-          >
-            プラン・課金設定へ
-          </Link>
         </div>
       )}
       {atSubmissionLimit && (

@@ -9,8 +9,6 @@ import { APPROVAL_STATUS_LABELS } from "@/lib/constants";
 import {
   CREATOR_PLAN_LABELS,
   formatListingSubmissionUsage,
-  formatTrialEndDate,
-  trialDaysRemaining,
 } from "@/lib/creator-plan";
 import { Badge } from "@/components/ui/Badge";
 import type { PaginatedResponse, Product } from "@/types";
@@ -32,7 +30,6 @@ export default function DashboardPage() {
   }, [token, user]);
 
   const profile = user?.creator_profile;
-  const isOnTrial = profile?.plan_type === "free_trial" && profile.can_list !== false;
 
   return (
     <div className="space-y-6">
@@ -47,57 +44,25 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {user?.is_creator && user.creator_profile?.can_list === false && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm dark:border-amber-900 dark:bg-amber-950/30">
-          <p className="font-medium">無料トライアル期間が終了しています</p>
-          {profile?.trial_ends_at && (
-            <p className="mt-1 text-zinc-600 dark:text-zinc-400">
-              トライアル終了日: {formatTrialEndDate(profile.trial_ends_at)}
-            </p>
-          )}
-          <p className="mt-1 text-zinc-600 dark:text-zinc-400">
-            掲載申請や公開一覧への表示には基本掲載プランの契約が必要です。
-          </p>
-          <ButtonLink href="/settings/billing" className="mt-3" variant="secondary">
-            プランを確認する
-          </ButtonLink>
-        </div>
-      )}
-
-      {user?.is_creator && isOnTrial && profile?.trial_ends_at && (
-        <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-sm dark:border-indigo-900 dark:bg-indigo-950/30">
-          <p className="font-medium text-indigo-900 dark:text-indigo-100">
-            {CREATOR_PLAN_LABELS.free_trial}期間中
-          </p>
-          <p className="mt-1 text-indigo-800 dark:text-indigo-200">
-            終了日: {formatTrialEndDate(profile.trial_ends_at)}
-            （残り {trialDaysRemaining(profile.trial_ends_at)} 日）
-          </p>
-          <p className="mt-1 text-zinc-600 dark:text-zinc-400">
-            トライアル終了後は基本掲載プラン（¥500/月）の契約が必要です。
-          </p>
-          <Link
-            href="/settings/billing"
-            className="mt-2 inline-block text-indigo-600 hover:underline dark:text-indigo-400"
-          >
-            プラン・課金設定を見る
-          </Link>
-        </div>
-      )}
-
       {user?.is_creator && profile && (
         <div className="rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm dark:border-zinc-800 dark:bg-zinc-900">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            {profile.plan_type !== "free_trial" && (
-              <p>
-                <span className="text-zinc-500">掲載プラン: </span>
-                <span className="font-medium">{CREATOR_PLAN_LABELS[profile.plan_type]}</span>
-              </p>
-            )}
+            <p>
+              <span className="text-zinc-500">掲載プラン: </span>
+              <span className="font-medium">{CREATOR_PLAN_LABELS[profile.plan_type]}</span>
+            </p>
             <p>
               <span className="text-zinc-500">掲載申請枠: </span>
               <span className="font-medium">{formatListingSubmissionUsage(profile)}</span>
             </p>
+            {profile.plan_type === "free" && (
+              <Link
+                href="/settings/billing"
+                className="text-indigo-600 hover:underline dark:text-indigo-400"
+              >
+                Premium で5件まで拡張
+              </Link>
+            )}
           </div>
         </div>
       )}

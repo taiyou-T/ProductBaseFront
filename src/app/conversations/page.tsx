@@ -36,7 +36,7 @@ export default function ConversationsPage() {
             <p className="font-medium">チャットを利用するにはプランが必要です</p>
             <p className="mt-2 text-amber-800 dark:text-amber-200">
               {user?.is_creator
-                ? "掲載者として返信するには、基本掲載プランへの加入または無料トライアル期間内である必要があります。"
+                ? "掲載者として返信するには、掲載者プロフィールの作成が必要です。"
                 : "チャットを開始・閲覧するにはサポータープランへの加入が必要です。"}
             </p>
             <Link

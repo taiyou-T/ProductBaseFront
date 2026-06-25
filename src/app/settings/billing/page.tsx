@@ -15,8 +15,7 @@ import {
 } from "@/lib/constants";
 import {
   CREATOR_PLAN_LABELS,
-  formatTrialEndDate,
-  trialDaysRemaining,
+  formatListingSubmissionUsage,
 } from "@/lib/creator-plan";
 import { formatJapanDatetime } from "@/lib/datetime";
 import type { Subscription, SubscriptionPlanType } from "@/types";
@@ -40,7 +39,7 @@ export default function BillingPage() {
   const [error, setError] = useState<string | null>(null);
 
   const profile = user?.creator_profile;
-  const isOnTrial = profile?.plan_type === "free_trial" && profile.can_list !== false;
+  const isFreeCreator = user?.is_creator && profile?.plan_type === "free";
 
   const loadSubscriptions = useCallback(async () => {
     if (!token) return;
@@ -104,7 +103,7 @@ export default function BillingPage() {
         <div>
           <h1 className="text-2xl font-bold">プラン・お支払い</h1>
           <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-            ProductBase では、閲覧者向けと掲載者向けのプランがあります。まずは無料プランから始められ、必要に応じて有料プランへアップグレードできます。
+            ProductBase では、閲覧者向けと掲載者向けのプランがあります。掲載者は無料で3件まで掲載でき、より多く掲載したい場合は Premium を選べます。
           </p>
           <p className="mt-1 text-sm text-zinc-500">
             お支払いは Stripe Checkout で安全に処理されます。
@@ -152,7 +151,7 @@ export default function BillingPage() {
               <div>
                 <h2 className="text-lg font-semibold">無料プラン</h2>
                 <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                  登録直後から利用できるプランです。掲載者は無料トライアル期間中も掲載機能をお試しできます。
+                  登録直後から利用できるプランです。掲載者は無料で成果物を掲載できます。
                 </p>
               </div>
               <div className="grid gap-4">
@@ -160,18 +159,14 @@ export default function BillingPage() {
                   const isViewerPlan = plan.id === "viewer";
                   const isCurrentFree =
                     (isViewerPlan && !user?.is_supporter) ||
-                    (plan.id === "creator_trial" && isOnTrial);
+                    (plan.id === "creator_free" && isFreeCreator);
 
                   let note: string | undefined;
-                  if (plan.id === "creator_trial") {
+                  if (plan.id === "creator_free") {
                     if (!user?.is_creator) {
                       note = "利用には掲載者プロフィールの作成が必要です。";
-                    } else if (isOnTrial && profile?.trial_ends_at) {
-                      note = `現在トライアル中です。終了日: ${formatTrialEndDate(profile.trial_ends_at)}（残り ${trialDaysRemaining(profile.trial_ends_at)} 日）`;
-                    } else if (user.is_creator && profile?.can_list === false) {
-                      note = "無料トライアル期間は終了しています。基本掲載または Premium の契約が必要です。";
-                    } else if (user.is_creator && profile && profile.plan_type !== "free_trial") {
-                      note = `現在の掲載プラン: ${CREATOR_PLAN_LABELS[profile.plan_type]}`;
+                    } else if (profile) {
+                      note = `現在の掲載枠: ${formatListingSubmissionUsage(profile)}（${CREATOR_PLAN_LABELS[profile.plan_type]}）`;
                     }
                   } else if (user?.is_supporter) {
                     note = "サポータープラン加入中のため、無料プランの上限は拡張されています。";
@@ -198,7 +193,7 @@ export default function BillingPage() {
                   <Link href="/dashboard/onboarding" className="mx-1 text-indigo-600 hover:underline dark:text-indigo-400">
                     掲載者プロフィールを作成
                   </Link>
-                  して、無料トライアルを開始できます。
+                  して、無料掲載を始められます。
                 </p>
               )}
             </section>
@@ -207,7 +202,7 @@ export default function BillingPage() {
               <div>
                 <h2 className="text-lg font-semibold">有料プラン</h2>
                 <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                  閲覧者はサポーター、掲載者は基本掲載または Premium を選べます。1つのアカウントで複数の役割を持つこともできます。
+                  閲覧者はサポーター、掲載者は Premium を選べます。1つのアカウントで複数の役割を持つこともできます。
                 </p>
               </div>
               <div className="grid gap-4">
