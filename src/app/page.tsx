@@ -5,8 +5,11 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { buildWebSiteJsonLd } from "@/lib/seo-jsonld";
 import { publicPageMetadata } from "@/lib/seo";
 import { AnnouncementList } from "@/components/announcements/AnnouncementList";
+import { AdvertisementBanner } from "@/components/advertisements/AdvertisementBanner";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { HomeHeroActions } from "@/components/home/HomeHeroActions";
+import { getActiveAdvertisements } from "@/lib/advertisements";
+import { mergePrProducts } from "@/lib/product-listing";
 import type { Announcement, PaginatedResponse, Product } from "@/types";
 
 export const metadata: Metadata = publicPageMetadata({
@@ -19,24 +22,29 @@ export const metadata: Metadata = publicPageMetadata({
 
 async function getHomeData() {
   try {
-    const [newest, popular, announcements] = await Promise.all([
+    const [newest, popular, announcements, advertisements] = await Promise.all([
       serverApi<PaginatedResponse<Product>>("/public/products?sort=newest&per_page=6"),
-      serverApi<{ type: string; data: Product[] }>("/public/rankings?type=popular&limit=6"),
+      serverApi<{ type: string; data: Product[]; pr_products?: Product[] }>(
+        "/public/rankings?type=popular&limit=6",
+      ),
       serverApi<PaginatedResponse<Announcement>>("/public/announcements?per_page=3"),
+      getActiveAdvertisements("home"),
     ]);
-    return { newest, popular, announcements, error: null };
+    return { newest, popular, announcements, advertisements, error: null };
   } catch {
     return {
-      newest: { data: [], meta: { current_page: 1, last_page: 1, per_page: 6, total: 0 } },
+      newest: { data: [], pr_products: [], meta: { current_page: 1, last_page: 1, per_page: 6, total: 0 } },
       popular: { type: "popular", data: [] },
       announcements: { data: [], meta: { current_page: 1, last_page: 1, per_page: 3, total: 0 } },
+      advertisements: [],
       error: "API に接続できません。バックエンドが起動しているか確認してください。",
     };
   }
 }
 
 export default async function HomePage() {
-  const { newest, popular, announcements, error } = await getHomeData();
+  const { newest, popular, announcements, advertisements, error } = await getHomeData();
+  const newestProducts = mergePrProducts(newest.data, newest.pr_products);
 
   return (
     <div className="space-y-12">
@@ -61,6 +69,8 @@ export default async function HomePage() {
         </div>
       )}
 
+      <AdvertisementBanner advertisements={advertisements} />
+
       <section>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-semibold">新着成果物</h2>
@@ -68,7 +78,7 @@ export default async function HomePage() {
             すべて見る
           </Link>
         </div>
-        <ProductGrid products={newest.data} />
+        <ProductGrid products={newestProducts} />
       </section>
 
       <section>

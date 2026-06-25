@@ -7,6 +7,8 @@ import { publicPageMetadata } from "@/lib/seo";
 import { ProductCategoryFilter } from "@/components/products/ProductCategoryFilter";
 import { ProductDevelopmentStatusFilter } from "@/components/products/ProductDevelopmentStatusFilter";
 import { ProductGrid } from "@/components/products/ProductGrid";
+import { AdvertisementBanner } from "@/components/advertisements/AdvertisementBanner";
+import { getActiveAdvertisements } from "@/lib/advertisements";
 import { SORT_OPTIONS, DEVELOPMENT_STATUS_LABELS } from "@/lib/constants";
 import type { PaginatedResponse, Product } from "@/types";
 
@@ -34,14 +36,17 @@ export default async function ProductsPage({
   if (tag) query.set("tag", tag);
   if (developmentStatus) query.set("development_status", developmentStatus);
 
-  const [categories, productsResult] = await Promise.all([
+  const [categories, productsResult, advertisements] = await Promise.all([
     getPublicCategories(),
     serverApi<PaginatedResponse<Product>>(`/public/products?${query.toString()}`).catch(() => ({
       data: [] as Product[],
+      pr_products: [] as Product[],
     })),
+    getActiveAdvertisements("products"),
   ]);
 
   const products = productsResult.data;
+  const prProducts = productsResult.pr_products ?? [];
   const activeCategory = categories.find((item) => item.slug === category);
   const activeDevelopmentStatus = developmentStatus
     ? DEVELOPMENT_STATUS_LABELS[developmentStatus]
@@ -99,7 +104,9 @@ export default async function ProductsPage({
         development_status={developmentStatus || undefined}
       />
 
-      <ProductGrid products={products} />
+      <AdvertisementBanner advertisements={advertisements} />
+
+      <ProductGrid products={products} prProducts={prProducts} />
     </div>
   );
 }

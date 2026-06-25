@@ -1,6 +1,8 @@
 import { serverApi } from "@/lib/api";
 import { getPublicCategories } from "@/lib/categories";
 import { ProductGrid } from "@/components/products/ProductGrid";
+import { AdvertisementBanner } from "@/components/advertisements/AdvertisementBanner";
+import { getActiveAdvertisements } from "@/lib/advertisements";
 import { ProductSearchForm } from "@/components/products/ProductSearchForm";
 import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/seo";
@@ -28,8 +30,10 @@ export default async function SearchPage({
   const hasFilters = Boolean(q || category || developmentStatus);
 
   const categories = await getPublicCategories();
+  const advertisements = await getActiveAdvertisements("search");
 
   let products: Product[] = [];
+  let prProducts: Product[] = [];
   if (hasFilters) {
     try {
       const query = new URLSearchParams({ sort, per_page: "20" });
@@ -41,8 +45,10 @@ export default async function SearchPage({
         0,
       );
       products = res.data;
+      prProducts = res.pr_products ?? [];
     } catch {
       products = [];
+      prProducts = [];
     }
   }
 
@@ -72,8 +78,9 @@ export default async function SearchPage({
           の検索結果: {products.length} 件
         </p>
       )}
+      <AdvertisementBanner advertisements={advertisements} />
       {hasFilters ? (
-        <ProductGrid products={products} />
+        <ProductGrid products={products} prProducts={prProducts} />
       ) : (
         <p className="text-sm text-zinc-500">
           キーワード、カテゴリ、または開発ステータスを指定して検索してください。

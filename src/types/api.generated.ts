@@ -4,6 +4,54 @@
  */
 
 export interface paths {
+    "/public/advertisements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["public.advertisement.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/advertisements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["admin.advertisement.index"];
+        put?: never;
+        post: operations["advertisement.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/advertisements/{advertisement}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["advertisement.update"];
+        post?: never;
+        delete: operations["advertisement.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/public/announcements": {
         parameters: {
             query?: never;
@@ -1111,6 +1159,19 @@ export interface components {
             creator_profile?: components["schemas"]["CreatorProfileResource"];
             subscriptions?: components["schemas"]["SubscriptionResource"][];
         };
+        /** AdvertisementResource */
+        AdvertisementResource: {
+            id: number;
+            name: string;
+            image_url: string;
+            url: string;
+            starts_at: string | null;
+            ends_at: string | null;
+            placements: unknown[];
+            sort_order: number;
+            created_at: string | null;
+            updated_at: string | null;
+        };
         /** AnnouncementResource */
         AnnouncementResource: {
             id: number;
@@ -1184,11 +1245,11 @@ export interface components {
         InquiryCategory: "account" | "listing" | "feedback" | "other";
         /** InquiryResource */
         InquiryResource: {
-            id: string;
-            category: string;
+            id: number;
+            category: components["schemas"]["InquiryCategory"];
             body: string;
             email: string;
-            status: string;
+            status: components["schemas"]["InquiryStatus"];
             user?: components["schemas"]["UserResource"];
             created_at: string | null;
             updated_at: string | null;
@@ -1282,6 +1343,7 @@ export interface components {
             published_at: string | null;
             view_count: number;
             favorite_count: number;
+            is_pr_promoted: boolean;
             is_published: boolean;
             category?: components["schemas"]["CategoryResource"];
             tags?: components["schemas"]["TagResource"][];
@@ -1420,6 +1482,155 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    "public.advertisement.index": {
+        parameters: {
+            query: {
+                placement: "home" | "products" | "search" | "favorites";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `AdvertisementResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdvertisementResource"][];
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "admin.advertisement.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `AdvertisementResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdvertisementResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "advertisement.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        advertisement: components["schemas"]["AdvertisementResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "advertisement.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The advertisement ID */
+                advertisement: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `AdvertisementResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdvertisementResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "advertisement.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The advertisement ID */
+                advertisement: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "広告を削除しました。";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
     "public.announcement.index": {
         parameters: {
             query?: never;
@@ -3252,6 +3463,7 @@ export interface operations {
                 development_status?: "planning" | "developing" | "testing" | "beta" | "released" | "ended" | null;
                 sort?: "newest" | "popular" | "favorites" | null;
                 per_page?: number | null;
+                page?: number | null;
             };
             header?: never;
             path?: never;
@@ -3259,38 +3471,25 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Paginated set of `ProductResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
-                        data: components["schemas"]["ProductResource"][];
-                        links: {
-                            first: string | null;
-                            last: string | null;
-                            prev: string | null;
-                            next: string | null;
-                        };
+                        pr_products: unknown[];
+                        data: unknown[];
                         meta: {
                             current_page: number;
-                            from: number | null;
                             last_page: number;
-                            /** @description Generated paginator links. */
-                            links: {
-                                url: string | null;
-                                label: string;
-                                active: boolean;
-                            }[];
-                            /** @description Base path for paginator generated URLs. */
-                            path: string | null;
-                            /** @description Number of items shown per page. */
                             per_page: number;
-                            /** @description Number of the last item in the slice. */
-                            to: number | null;
-                            /** @description Total number of items being paginated. */
                             total: number;
+                        };
+                        links: {
+                            first: string;
+                            last: string;
+                            prev: string | null;
+                            next: string | null;
                         };
                     };
                 };
@@ -3820,7 +4019,8 @@ export interface operations {
                 content: {
                     "application/json": {
                         type: string | "popular";
-                        data: components["schemas"]["ProductResource"][];
+                        pr_products: unknown[];
+                        data: unknown[];
                     };
                 };
             };

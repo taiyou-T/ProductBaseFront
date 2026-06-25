@@ -16,6 +16,11 @@ export function ProductCard({ product }: { product: Product }) {
       className="group flex flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm transition hover:border-indigo-300 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
     >
       <div className="relative aspect-video bg-zinc-100 dark:bg-zinc-800">
+        {product.is_pr_promoted && (
+          <span className="absolute left-2 top-2 z-10 rounded bg-amber-500 px-2 py-0.5 text-xs font-semibold text-white shadow">
+            PR
+          </span>
+        )}
         {product.thumbnail_url ? (
           <Image
             src={product.thumbnail_url}

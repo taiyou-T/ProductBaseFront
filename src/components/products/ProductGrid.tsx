@@ -1,8 +1,17 @@
 import type { Product } from "@/types";
+import { mergePrProducts } from "@/lib/product-listing";
 import { ProductCard } from "./ProductCard";
 
-export function ProductGrid({ products }: { products: Product[] }) {
-  if (products.length === 0) {
+export function ProductGrid({
+  products,
+  prProducts = [],
+}: {
+  products: Product[];
+  prProducts?: Product[];
+}) {
+  const displayProducts = mergePrProducts(products, prProducts);
+
+  if (displayProducts.length === 0) {
     return (
       <p className="rounded-lg border border-dashed border-zinc-300 p-8 text-center text-zinc-500 dark:border-zinc-700">
         成果物がありません。
@@ -12,7 +21,7 @@ export function ProductGrid({ products }: { products: Product[] }) {
 
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {products.map((product) => (
+      {displayProducts.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
     </div>

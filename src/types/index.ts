@@ -102,6 +102,7 @@ export interface Product {
   published_at: string | null;
   view_count: number;
   favorite_count: number;
+  is_pr_promoted?: boolean;
   is_published: boolean;
   category: Category | null;
   tags: Tag[];
@@ -121,6 +122,19 @@ export interface Announcement {
   updated_at: string;
 }
 
+export interface Advertisement {
+  id: number;
+  name: string;
+  image_url: string;
+  url: string;
+  starts_at: string;
+  ends_at: string;
+  placements: string[];
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface PaginationMeta {
   current_page: number;
   last_page: number;
@@ -130,6 +144,7 @@ export interface PaginationMeta {
 
 export interface PaginatedResponse<T> {
   data: T[];
+  pr_products?: T[];
   meta: PaginationMeta;
   links?: {
     first: string | null;
