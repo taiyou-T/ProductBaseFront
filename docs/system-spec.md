@@ -2,7 +2,7 @@
 
 ProductBaseFront（公開サイト + 掲載者ダッシュボード）
 
-- **最終更新**: 2026-06-25
+- **最終更新**: 2026-06-25（広告バナー・Premium PR バッジ）
 - **リポジトリ**: https://github.com/taiyou-T/ProductBaseFront
 - **本番 URL**: https://productbase-jp.com
 
@@ -52,14 +52,14 @@ ProductBaseFront（公開サイト + 掲載者ダッシュボード）
 
 | パス | 説明 |
 |------|------|
-| `/` | ホーム（新着・ランキング・お知らせ） |
-| `/products` | 成果物一覧（ソート・カテゴリ・タグ・開発ステータス） |
+| `/` | ホーム（新着・ランキング・お知らせ・広告） |
+| `/products` | 成果物一覧（ソート・カテゴリ・タグ・開発ステータス・広告・PR） |
 | `/products/[identifier]` | 成果物詳細（JSON-LD・OGP・掲載日時表示） |
 | `/developers/[identifier]` | 開発者プロフィール |
 | `/organizations/[slug]` | 団体プロフィール |
 | `/categories/[slug]` | カテゴリ別一覧 |
 | `/tags/[slug]` | タグ別一覧 |
-| `/search` | 全文検索 |
+| `/search` | 全文検索（広告・PR 表示） |
 | `/terms` | 利用規約 |
 | `/contact` | お問い合わせフォーム |
 
@@ -75,7 +75,7 @@ ProductBaseFront（公開サイト + 掲載者ダッシュボード）
 
 | パス | 説明 |
 |------|------|
-| `/favorites` | お気に入り成果物一覧 |
+| `/favorites` | お気に入り成果物一覧（広告表示） |
 | `/creator-favorites` | お気に入り開発者一覧 |
 | `/notifications` | 通知一覧 |
 | `/view-history` | 閲覧履歴（サポーター） |
@@ -181,6 +181,29 @@ PV・お気に入り数の下に掲載日時を表示:
 
 ---
 
+## 7a. 広告・Premium PR
+
+### 広告バナー
+
+| 画面 | placement | コンポーネント |
+|------|-----------|----------------|
+| `/` | `home` | `AdvertisementBanner`（SSR） |
+| `/products` | `products` | `AdvertisementBanner`（SSR） |
+| `/search` | `search` | `AdvertisementBanner`（SSR） |
+| `/favorites` | `favorites` | `ClientAdvertisementBanner`（要ログイン） |
+
+API: `GET /public/advertisements?placement=...`
+
+### Premium PR
+
+- `GET /public/products` の `pr_products` を `ProductGrid` 先頭にマージ
+- `GET /public/rankings` の `data` は API 側で PR マージ済み
+- `ProductCard` で `is_pr_promoted` のとき **PR** バッジを表示
+
+`src/lib/product-listing.ts` の `mergePrProducts()` を利用。
+
+---
+
 ## 8. 本番インフラ
 
 | 項目 | 値 |
@@ -232,6 +255,7 @@ REVALIDATE_SECRET=<フロントと同一>
 
 | 日付 | 内容 |
 |------|------|
+| 2026-06-25 | 広告バナー（4画面）・Premium PR バッジ・`pr_products` マージ |
 | 2026-06-25 | 掲載プラン UI 更新（無料掲載 + Premium のみ・枠3/5・トライアル/Standard 削除） |
 | 2026-06-23 | SEO 最適化（構造化データ・OGP・タイトル/説明文・パンくず・ページ別 keywords） |
 | 2026-06-23 | SEO keywords・`/contact`・`[identifier]` URL・掲載日表示・slug フォーム削除 |

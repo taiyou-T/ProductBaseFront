@@ -33,6 +33,14 @@ ProductBaseFront 開発タスク
 | **閲覧者** | お気に入り・通報・お問い合わせ |
 | **サポーター** | 閲覧履歴・チャット |
 | **課金** | Stripe Checkout / Customer Portal UI（サポーター + Premium） |
+| **広告・PR** | 4画面の広告バナー・Premium PR バッジ・`pr_products` マージ |
+
+### 2026-06-25（広告・PR）
+
+- [x] `AdvertisementBanner` / `ClientAdvertisementBanner`
+- [x] TOP・一覧・検索・お気に入りへの広告表示
+- [x] `ProductCard` PR バッジ・`mergePrProducts`
+- [x] 仕様書更新（system-spec / todo）
 
 ### 本番
 
